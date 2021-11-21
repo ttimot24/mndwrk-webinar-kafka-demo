@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="MessageLakeStoreMsg" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="HOST" elementType="Argument">
+            <stringProp name="Argument.name">HOST</stringProp>
+            <stringProp name="Argument.value">centraldev</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PORT" elementType="Argument">
+            <stringProp name="Argument.name">PORT</stringProp>
+            <stringProp name="Argument.value">8085</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CONTEXT" elementType="Argument">
+            <stringProp name="Argument.name">CONTEXT</stringProp>
+            <stringProp name="Argument.value">messagelake</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">150</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CAM Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{ &quot;dtype&quot;: &quot;CAM&quot;, &quot;rsuId&quot;: ${__Random(001,200)}, &quot;messageData&quot;:&quot;0202000004D2D819405A3E12492ED46D47C00000000030D40040000FC0007EBFE1EA8003FF07FFF60000009BFFFEF929B19C7FFF5FFFF7C94D8CE00026FFFFBE4A6C67000137FFFDF25363380009BFFFEF929B19C0004DFFFF7C94D8CE00026FFFFBE4A6C67000137FFFDF25363380009BFFFEF929B19C000480&quot; }&#xd;
+&#xd;
+&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="BSM Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{ &quot;dtype&quot;: &quot;BSM&quot;, &quot;rsuId&quot;: ${__Random(001,200)}, &quot;messageData&quot;:&quot;181f76e1f60000029b0109c609c7000000000000002000000064000000b40288000000ffffffffffff00000075ab2effffffffffff0000360088dc03002081160381004003805a0014575f408a51deb16a23e1d0d99c8a751d084214140fd270000000fd7d0fa1007fff80805a0f0000c0c0810016c098100b619610017c08e9009730210018408fd02385360fff6c038301d96f20ff8dbff13015fffcfffec8004001200001e01bc1ba42f8810101000301804d72ccfb0e6f0616108300000000001c374a8586000b010b0001200001230001260001270001820001830001840001870003204095000320409600032040978183c1d70a7900e079f5dbcb15b11dd34410653fde39d29156b12dd51a70ae4d03cd8080436f929337f9e009b2c14eb34373a73fce5af3c3951b99595a4be52e69c3a1bc61642c864da6f74f380ac0bc41a4a9c358fd508e5ff612160795e502fcfbf8aa&quot; }&#xd;
+&#xd;
+&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DENM Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;dtype&quot;: &quot;DENM&quot;,&#xd;
+    &quot;rsuId&quot;: 151057109,&#xd;
+    &quot;messageData&quot;: &quot;02017EA5F2D5E1BF52F96A80000D69E1900B035A786402CD1F0924976A1D016000000000186A0F003C07CE0A0004098000FC001F8030000000006464FFFE00&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="IVI Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;dtype&quot;: &quot;IVI&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;020643fb7c51a8bc9c46060167e63ea5fb77080fa9803d52044028f6df73bb4c1477fffffff08eddd0f84200019ff9c7f83208dd8aa4e01ad820560b678b5de0ef58e1c60ff98db860aa988ddc2080973ff38ff063ff9aff82befe6ec2cbff36fef6bfe46fdb1bfe46fd9dbfe5afd89bfe44fd7fbfe5cfd7fbfe46fd75bfe46fd70bfe46fd6bbfe6cfd7abfe98fd89bfe96fd8ebfe82fd8ebfe6efd93bfe5afd89bfe82fd7fbfe96fd7fbfe80fd66bfe98fd61bfe82fd613feaafd673fe96fd6bbfeaafd70bfefafe473ff9aff293feaafd75bfebefd703fed2fd763fd6afb04bfed2fd84bfee6fd8ebfefafd8ebfebefd7fbff34fe42bfe84fcb7bfccaf8393fe6efb233fe6efb18bfd1af6febf9f8ec6d3fcccf0603fa86de76bfcded5c58c00&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="MAPEU Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;dtype&quot;: &quot;MAPEU&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;0012814808000307c6cbcb6efddd102d40dfa68414fa2aa000896677fbc4d52328004b0242004800110000000000713548ac8cb33bce8005a3544d0001006400088000000000389aa46e42599de78003302e5ec8002018800110000000000713548def4b33c2d30065655b3e8004041000220000000000e26a9162e966784bc00c42e6799000c024000440000380001c4d522e492ccef1840168b7120001241a000192108000c903200060c044000440000100001c4d52389d2ccef8ac0198262f78000901400080c054000440000280001c4d523a192ccefde40198212ec400290880008483100040603a0002200001c0000e26a919e89667878e00cad9b687002480c0001242080009206800041812800088000020000389aa45672599e0b580310cd9f0400120c800081814800088000050000389aa452f6599e03700311319f2c0052070000890120004&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="MAPUS Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;dtype&quot;: &quot;MAPUS&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;00128174380330002092ee0d51f26af176a69f7d160402dc16480248000800039da9a8c668f93464813ece76a6ad9ba3e4bd7205050202404900890001000073b53525fd1f26946027d9ced4d5dff47c97d880a0a04030108060900020000e76a6a19aa3e4cf4604fb39da9aaf028f92eed01414200664000800039da9a9b3a8f93586013ece76a6b82ba3e4e4ec050f12022200020000e76a6a608a3e4d9b804fb39da9ae1b68f93a308143c080c0324054400040001ced4d4a3747c9b6c409f673b535b1b51f274dd02878101208200ca4000800019da9a80728f936fcb9da9a5aba8f93b8c01414480ec8000800019da9a73768f936d039da9a4fce8f93b490141408030524086400040000ced4d372747c9b4d5ced4d255347c9d8340a0a0406030804b900020000676a69c0aa3e4d50ce76a68d90a3e4c7e404fb12054200020000e76a69cd0a3e4d1ea04fb19da9a3c3a8f93158820181c902e10001000073b534f20d1f2685e027d8ced4d209747c986081006100&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TIM Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;dtype&quot;: &quot;TIM&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;4015D137000708F87466A7229E5CFFFFE4BA26E00098015201808F87466A7229E5CE8009C7229C7CD1F0E902C0A0A71C8A7A8B47C3A521027D8C7229E64B1F0E853CC7229D13B1F0E84F4000040E030AD7E5BF767415F0F941132F4CB8FA69DFB90A1420&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="All Request UPERHEX" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">[&#xd;
+{&#xd;
+    &quot;dtype&quot;: &quot;CAM&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;0202000004D2D819405A3E12492ED46D47C00000000030D40040000FC0007EBFE1EA8003FF07FFF60000009BFFFEF929B19C7FFF5FFFF7C94D8CE00026FFFFBE4A6C67000137FFFDF25363380009BFFFEF929B19C0004DFFFF7C94D8CE00026FFFFBE4A6C67000137FFFDF25363380009BFFFEF929B19C000480&quot;&#xd;
+},&#xd;
+{&#xd;
+    &quot;dtype&quot;: &quot;DENM&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;02017EA5F2D5E1BF52F96A80000D69E1900B035A786402CD1F0924976A1D016000000000186A0F003C07CE0A0004098000FC001F8030000000006464FFFE00&quot;&#xd;
+},&#xd;
+{&#xd;
+    &quot;dtype&quot;: &quot;DENM&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;02017EA5F2D5E1BF52F96A80000D69E1900B035A786402CD1F0924976A1D016000000000186A0F003C07CE0A0004098000FC001F8030000000006464FFFE00&quot;&#xd;
+},&#xd;
+{&#xd;
+    &quot;dtype&quot;: &quot;UNKNOWN&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;0202000004D2D819405A3E12492ED46D47C00000000030D40040000FC0007EBFE1EA8003FF07FFF60000009BFFFEF929B19C7FFF5FFFF7C94D8CE00026FFFFBE4A6C67000137FFFDF25363380009BFFFEF929B19C0004DFFFF7C94D8CE00026FFFFBE4A6C67000137FFFDF25363380009BFFFEF929B19C000480&quot;&#xd;
+},&#xd;
+{&#xd;
+    &quot;dtype&quot;: &quot;IVI&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;02060000005EA15C0028002468C5EECF931000&quot;&#xd;
+},&#xd;
+{&#xd;
+    &quot;dtype&quot;: &quot;MAPUS&quot;,&#xd;
+    &quot;rsuId&quot;: ${__Random(001,200)},&#xd;
+    &quot;messageData&quot;: &quot;0012814808000307c6cbcb6efddd102d40dfa68414fa2aa000896677fbc4d52328004b0242004800110000000000713548ac8cb33bce8005a3544d0001006400088000000000389aa46e42599de78003302e5ec8002018800110000000000713548def4b33c2d30065655b3e8004041000220000000000e26a9162e966784bc00c42e6799000c024000440000380001c4d522e492ccef1840168b7120001241a000192108000c903200060c044000440000100001c4d52389d2ccef8ac0198262f78000901400080c054000440000280001c4d523a192ccefde40198212ec400290880008483100040603a0002200001c0000e26a919e89667878e00cad9b687002480c0001242080009206800041812800088000020000389aa45672599e0b580310cd9f0400120c800081814800088000050000389aa452f6599e03700311319f2c0052070000890120004&quot;&#xd;
+}&#xd;
+]</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/store/batch</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TIM Request JSON" enabled="false">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+   &quot;dtype&quot;:&quot;TIM&quot;,&#xd;
+   &quot;id&quot;:&quot;4501e195-a7af-4968-a5ca-e6c4793b5869&quot;,&#xd;
+   &quot;rsuId&quot;:${__Random(001,200)},&#xd;
+   &quot;timestamp&quot;:1614860643265,&#xd;
+   &quot;decodedMessageData&quot;:{&#xd;
+      &quot;header&quot;:null,&#xd;
+      &quot;travelerInformation&quot;:{&#xd;
+         &quot;msgCnt&quot;:1,&#xd;
+         &quot;timeStamp&quot;:381239,&#xd;
+         &quot;packetID&quot;:null,&#xd;
+         &quot;urlB&quot;:null,&#xd;
+         &quot;dataFrames&quot;:[&#xd;
+            {&#xd;
+               &quot;sspTimRights&quot;:0,&#xd;
+               &quot;frameType&quot;:&quot;advisory&quot;,&#xd;
+               &quot;msgId&quot;:{&#xd;
+                  &quot;choiceID&quot;:1,&#xd;
+                  &quot;furtherInfoID&quot;:null,&#xd;
+                  &quot;roadSignID&quot;:{&#xd;
+                     &quot;position&quot;:{&#xd;
+                        &quot;lat&quot;:304003637,&#xd;
+                        &quot;long_&quot;:-842325784,&#xd;
+                        &quot;elevation&quot;:null,&#xd;
+                        &quot;regional&quot;:null&#xd;
+                     },&#xd;
+                     &quot;viewAngle&quot;:{&#xd;
+                        &quot;bytes&quot;:&quot;//8=&quot;,&#xd;
+                        &quot;unusedBits&quot;:0,&#xd;
+                        &quot;from292_5to315_0degrees&quot;:true,&#xd;
+                        &quot;from315_0to337_5degrees&quot;:true,&#xd;
+                        &quot;from112_5to135_0degrees&quot;:true,&#xd;
+                        &quot;from135_0to157_5degrees&quot;:true,&#xd;
+                        &quot;from157_5to180_0degrees&quot;:true,&#xd;
+                        &quot;from202_5to225_0degrees&quot;:true,&#xd;
+                        &quot;from225_0to247_5degrees&quot;:true,&#xd;
+                        &quot;from022_5to045_0degrees&quot;:true,&#xd;
+                        &quot;from045_0to067_5degrees&quot;:true,&#xd;
+                        &quot;from090_0to112_5degrees&quot;:true,&#xd;
+                        &quot;from270_0to292_5degrees&quot;:true,&#xd;
+                        &quot;from247_5to270_0degrees&quot;:true,&#xd;
+                        &quot;from337_5to360_0degrees&quot;:true,&#xd;
+                        &quot;from067_5to090_0degrees&quot;:true,&#xd;
+                        &quot;from180_0to202_5degrees&quot;:true,&#xd;
+                        &quot;from000_0to022_5degrees&quot;:true,&#xd;
+                        &quot;bitSize&quot;:16&#xd;
+                     },&#xd;
+                     &quot;mutcdCode&quot;:&quot;warning&quot;,&#xd;
+                     &quot;crc&quot;:null&#xd;
+                  }&#xd;
+               },&#xd;
+               &quot;startYear&quot;:null,&#xd;
+               &quot;startTime&quot;:381239,&#xd;
+               &quot;duratonTime&quot;:2,&#xd;
+               &quot;priority&quot;:3,&#xd;
+               &quot;sspLocationRights&quot;:0,&#xd;
+               &quot;regions&quot;:[&#xd;
+                  {&#xd;
+                     &quot;name&quot;:&quot;0&quot;,&#xd;
+                     &quot;id&quot;:null,&#xd;
+                     &quot;anchor&quot;:{&#xd;
+                        &quot;lat&quot;:304003637,&#xd;
+                        &quot;long_&quot;:-842325784,&#xd;
+                        &quot;elevation&quot;:null,&#xd;
+                        &quot;regional&quot;:null&#xd;
+                     },&#xd;
+                     &quot;laneWidth&quot;:null,&#xd;
+                     &quot;directionality&quot;:&quot;forward&quot;,&#xd;
+                     &quot;closedPath&quot;:null,&#xd;
+                     &quot;direction&quot;:null,&#xd;
+                     &quot;description&quot;:{&#xd;
+                        &quot;choiceID&quot;:0,&#xd;
+                        &quot;path&quot;:{&#xd;
+                           &quot;scale&quot;:null,&#xd;
+                           &quot;offset&quot;:{&#xd;
+                              &quot;choiceID&quot;:0,&#xd;
+                              &quot;xy&quot;:{&#xd;
+                                 &quot;choiceID&quot;:0,&#xd;
+                                 &quot;nodes&quot;:[&#xd;
+                                    {&#xd;
+                                       &quot;delta&quot;:{&#xd;
+                                          &quot;choiceID&quot;:6,&#xd;
+                                          &quot;node_XY1&quot;:null,&#xd;
+                                          &quot;node_XY2&quot;:null,&#xd;
+                                          &quot;node_XY3&quot;:null,&#xd;
+                                          &quot;node_XY4&quot;:null,&#xd;
+                                          &quot;node_XY5&quot;:null,&#xd;
+                                          &quot;node_XY6&quot;:null,&#xd;
+                                          &quot;node_LatLon&quot;:{&#xd;
+                                             &quot;lon&quot;:-842329625,&#xd;
+                                             &quot;lat&quot;:304003851&#xd;
+                                          },&#xd;
+                                          &quot;regional&quot;:null&#xd;
+                                       },&#xd;
+                                       &quot;attributes&quot;:{&#xd;
+                                          &quot;localNode&quot;:null,&#xd;
+                                          &quot;disabled&quot;:null,&#xd;
+                                          &quot;enabled&quot;:null,&#xd;
+                                          &quot;data&quot;:null,&#xd;
+                                          &quot;dWidth&quot;:null,&#xd;
+                                          &quot;dElevation&quot;:10,&#xd;
+                                          &quot;regional&quot;:null&#xd;
+                                       }&#xd;
+                                    },&#xd;
+                                    {&#xd;
+                                       &quot;delta&quot;:{&#xd;
+                                          &quot;choiceID&quot;:6,&#xd;
+                                          &quot;node_XY1&quot;:null,&#xd;
+                                          &quot;node_XY2&quot;:null,&#xd;
+                                          &quot;node_XY3&quot;:null,&#xd;
+                                          &quot;node_XY4&quot;:null,&#xd;
+                                          &quot;node_XY5&quot;:null,&#xd;
+                                          &quot;node_XY6&quot;:null,&#xd;
+                                          &quot;node_LatLon&quot;:{&#xd;
+                                             &quot;lon&quot;:-842325225,&#xd;
+                                             &quot;lat&quot;:304004129&#xd;
+                                          },&#xd;
+                                          &quot;regional&quot;:null&#xd;
+                                       },&#xd;
+                                       &quot;attributes&quot;:{&#xd;
+                                          &quot;localNode&quot;:null,&#xd;
+                                          &quot;disabled&quot;:null,&#xd;
+                                          &quot;enabled&quot;:null,&#xd;
+                                          &quot;data&quot;:null,&#xd;
+                                          &quot;dWidth&quot;:null,&#xd;
+                                          &quot;dElevation&quot;:-10,&#xd;
+                                          &quot;regional&quot;:null&#xd;
+                                       }&#xd;
+                                    },&#xd;
+                                    {&#xd;
+                                       &quot;delta&quot;:{&#xd;
+                                          &quot;choiceID&quot;:6,&#xd;
+                                          &quot;node_XY1&quot;:null,&#xd;
+                                          &quot;node_XY2&quot;:null,&#xd;
+                                          &quot;node_XY3&quot;:null,&#xd;
+                                          &quot;node_XY4&quot;:null,&#xd;
+                                          &quot;node_XY5&quot;:null,&#xd;
+                                          &quot;node_XY6&quot;:null,&#xd;
+                                          &quot;node_LatLon&quot;:{&#xd;
+                                             &quot;lon&quot;:-842325722,&#xd;
+                                             &quot;lat&quot;:304003151&#xd;
+                                          },&#xd;
+                                          &quot;regional&quot;:null&#xd;
+                                       },&#xd;
+                                       &quot;attributes&quot;:null&#xd;
+                                    },&#xd;
+                                    {&#xd;
+                                       &quot;delta&quot;:{&#xd;
+                                          &quot;choiceID&quot;:6,&#xd;
+                                          &quot;node_XY1&quot;:null,&#xd;
+                                          &quot;node_XY2&quot;:null,&#xd;
+                                          &quot;node_XY3&quot;:null,&#xd;
+                                          &quot;node_XY4&quot;:null,&#xd;
+                                          &quot;node_XY5&quot;:null,&#xd;
+                                          &quot;node_XY6&quot;:null,&#xd;
+                                          &quot;node_LatLon&quot;:{&#xd;
+                                             &quot;lon&quot;:-842328418,&#xd;
+                                             &quot;lat&quot;:304003133&#xd;
+                                          },&#xd;
+                                          &quot;regional&quot;:null&#xd;
+                                       },&#xd;
+                                       &quot;attributes&quot;:null&#xd;
+                                    }&#xd;
+                                 ],&#xd;
+                                 &quot;computed&quot;:null&#xd;
+                              },&#xd;
+                              &quot;ll&quot;:null&#xd;
+                           }&#xd;
+                        },&#xd;
+                        &quot;geometry&quot;:null,&#xd;
+                        &quot;oldRegion&quot;:null&#xd;
+                     },&#xd;
+                     &quot;regional&quot;:null&#xd;
+                  }&#xd;
+               ],&#xd;
+               &quot;sspMsgRights1&quot;:0,&#xd;
+               &quot;sspMsgRights2&quot;:0,&#xd;
+               &quot;content&quot;:{&#xd;
+                  &quot;choiceID&quot;:0,&#xd;
+                  &quot;advisory&quot;:[&#xd;
+                     {&#xd;
+                        &quot;item&quot;:{&#xd;
+                           &quot;choiceID&quot;:0,&#xd;
+                           &quot;itis&quot;:1793,&#xd;
+                           &quot;text&quot;:null&#xd;
+                        }&#xd;
+                     },&#xd;
+                     {&#xd;
+                        &quot;item&quot;:{&#xd;
+                           &quot;choiceID&quot;:1,&#xd;
+                           &quot;itis&quot;:null,&#xd;
+                           &quot;text&quot;:&quot;Wrong Way Detection!!!&quot;&#xd;
+                        }&#xd;
+                     }&#xd;
+                  ],&#xd;
+                  &quot;workZone&quot;:null,&#xd;
+                  &quot;genericSign&quot;:null,&#xd;
+                  &quot;speedLimit&quot;:null,&#xd;
+                  &quot;exitService&quot;:null&#xd;
+               },&#xd;
+               &quot;url&quot;:null&#xd;
+            }&#xd;
+         ],&#xd;
+         &quot;regional&quot;:null&#xd;
+      }&#xd;
+   }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${CONTEXT}/api/v1/v2xmessage/downstream/send</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="49586">200</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.custom_message"></stringProp>
+          <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">1</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <ResultAction guiclass="ResultActionGui" testclass="ResultAction" testname="Result Status Action Handler" enabled="true">
+          <intProp name="OnError.action">2</intProp>
+        </ResultAction>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

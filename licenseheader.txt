@@ -1,0 +1,15 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}====================================
+${licensePrefix}Copyright (C) ${date?date?string("yyyy")} Commsignia Ltd
+${licensePrefix}http://commsignia.com
+${licensePrefix}All rights reserved
+${licensePrefix}------------------------------------
+${licensePrefix}Date: ${date}
+${licensePrefix}Author: ${user}
+${licensePrefix}Project: ${project.name} 
+${licensePrefix}====================================
+<#if licenseLast??>
+${licenseLast}
+</#if>

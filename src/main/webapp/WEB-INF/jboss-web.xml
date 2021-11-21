@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+   <context-root>messagelake</context-root>
+   <max-active-sessions>10</max-active-sessions>
+</jboss-web> 
