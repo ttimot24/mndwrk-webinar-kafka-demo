@@ -16,3 +16,9 @@ kafka-console-producer --topic meetup-demo-inbound --bootstrap-server localhost:
 ```json
 {"source": "TLC", "description":"Green signal"}
 ```
+```json
+{"source": "CCTV", "description":"People detected"}
+```
+```json
+{"source": "SENSOR", "description":"Something happend"}
+```
