@@ -27,7 +27,7 @@ public class KafkaMessageListener {
     @Autowired
     private MeetupDemoService meetupDemoService;
 
-    @KafkaListener(topics = KafkaConfig.KAFKA_UPSTREAM_INBOUND_TOPIC_NAME)
+    @KafkaListener(topics = KafkaConfig.KAFKA_UPSTREAM_INBOUND_TOPIC_NAME, containerFactory = "kafkaListenerContainerFactory")
     public void listenInboundEvent(final ConsumedEvent event) {
         log.debug("[Kafka] Consumed event: {}", event);
 

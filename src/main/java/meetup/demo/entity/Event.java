@@ -2,6 +2,8 @@ package meetup.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 
+import java.util.UUID;
+
 @JsonSubTypes({
    @JsonSubTypes.Type(value = ConsumedEvent.class),
    @JsonSubTypes.Type(value = ProducedEvent.class),
@@ -9,8 +11,17 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 
 public class Event {
 
+    private UUID uuid;
     private String source;
     private String description;
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 
     public String getSource() {
         return source;
@@ -30,7 +41,6 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "name='" + source + '\'' + ", description='" + description + '\'' + '}';
+        return "Event{" + "uuid=" + uuid + ", source='" + source + '\'' + ", description='" + description + '\'' + '}';
     }
-
 }

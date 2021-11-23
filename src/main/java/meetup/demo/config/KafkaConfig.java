@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -41,7 +42,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic v2xUpstreamEncodedMessageTopic() {
+    public NewTopic v2xInboundMessageTopic() {
 
         return TopicBuilder.name(KafkaConfig.KAFKA_UPSTREAM_INBOUND_TOPIC_NAME)
                 .partitions(10)
@@ -51,7 +52,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic v2xUpstreamDecodedMessageTopic() {
+    public NewTopic v2xOutboundMessageTopic() {
 
         return TopicBuilder.name(KafkaConfig.KAFKA_UPSTREAM_OUTBOUND_TOPIC_NAME)
                 .partitions(10)
@@ -61,7 +62,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<?, ?> consumerFactory() {
+    public ConsumerFactory<String, ConsumedEvent> consumerFactory() {
         final JsonDeserializer<ConsumedEvent> deserializer = new JsonDeserializer<>(ConsumedEvent.class, this.objectMapper)
                 .trustedPackages("*");
 
@@ -70,8 +71,21 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(properties.buildConsumerProperties(), new StringDeserializer(), deserializerWithErrorHandler);
     }
 
+
     @Bean
-    public RecordFilterStrategy<String, Event> recordFilterStrategy() {
+    public ConcurrentKafkaListenerContainerFactory<String, ConsumedEvent> kafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, ConsumedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConcurrency(10);
+        factory.setConsumerFactory(consumerFactory());
+        factory.setRecordFilterStrategy(recordFilterStrategy());
+
+        return factory;
+    }
+
+
+    @Bean
+    public RecordFilterStrategy<String, ConsumedEvent> recordFilterStrategy() {
         return new KafkaMeetupDemoEventFilterStrategy();
     }
 
