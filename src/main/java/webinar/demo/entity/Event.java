@@ -1,7 +1,8 @@
-package meetup.demo.entity;
+package webinar.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @JsonSubTypes({
@@ -14,6 +15,7 @@ public class Event {
     private UUID uuid;
     private String source;
     private String description;
+    private OffsetDateTime detectedAt;
 
     public UUID getUuid() {
         return uuid;
@@ -39,8 +41,16 @@ public class Event {
         this.description = description;
     }
 
+    public OffsetDateTime getDetectedAt() {
+        return detectedAt;
+    }
+
+    public void setDetectedAt(OffsetDateTime detectedAt) {
+        this.detectedAt = detectedAt;
+    }
+
     @Override
     public String toString() {
-        return "Event{" + "uuid=" + uuid + ", source='" + source + '\'' + ", description='" + description + '\'' + '}';
+        return "Event{" + "uuid=" + uuid + ", source='" + source + '\'' + ", description='" + description + '\'' + ", detectedAt=" + detectedAt + '}';
     }
 }

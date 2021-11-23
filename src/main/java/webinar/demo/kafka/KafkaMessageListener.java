@@ -10,12 +10,12 @@
  * ====================================
  */
 
-package meetup.demo.kafka;
+package webinar.demo.kafka;
 
-import meetup.demo.config.KafkaConfig;
-import meetup.demo.entity.ConsumedEvent;
+import webinar.demo.config.KafkaConfig;
+import webinar.demo.entity.ConsumedEvent;
 import lombok.extern.slf4j.Slf4j;
-import meetup.demo.service.MeetupDemoService;
+import webinar.demo.service.WebinarDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,13 @@ import org.springframework.stereotype.Service;
 public class KafkaMessageListener {
 
     @Autowired
-    private MeetupDemoService meetupDemoService;
+    private WebinarDemoService webinarDemoService;
 
     @KafkaListener(topics = KafkaConfig.KAFKA_UPSTREAM_INBOUND_TOPIC_NAME, containerFactory = "kafkaListenerContainerFactory")
     public void listenInboundEvent(final ConsumedEvent event) {
         log.debug("[Kafka] Consumed event: {}", event);
 
-        this.meetupDemoService.handleMessage(event);
+        this.webinarDemoService.handleMessage(event);
 
     }
 

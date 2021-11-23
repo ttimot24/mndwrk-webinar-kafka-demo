@@ -10,7 +10,7 @@
  * ====================================
  */
 
-package meetup.demo;
+package webinar.demo;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,13 +19,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 
 @SpringBootApplication
-public class MeetupDemoApplication {
+public class WebinarDemoApplication {
 
-    private static final Logger log = LogManager.getLogger(MeetupDemoApplication.class);
+    private static final Logger log = LogManager.getLogger(WebinarDemoApplication.class);
 
     public static void main(final String[] args) {
 
-        final SpringApplication application = new SpringApplication(MeetupDemoApplication.class);
+        final SpringApplication application = new SpringApplication(WebinarDemoApplication.class);
 
         application.addListeners(new ApplicationPidFileWriter());
 

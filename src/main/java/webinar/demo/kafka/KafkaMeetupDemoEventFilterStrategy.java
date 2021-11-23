@@ -1,6 +1,6 @@
-package meetup.demo.kafka;
+package webinar.demo.kafka;
 
-import meetup.demo.entity.ConsumedEvent;
+import webinar.demo.entity.ConsumedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.listener.adapter.RecordFilterStrategy;

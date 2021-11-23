@@ -1,8 +1,7 @@
-package meetup.demo.config;
+package webinar.demo.config;
 
-import meetup.demo.entity.ConsumedEvent;
-import meetup.demo.entity.Event;
-import meetup.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
+import webinar.demo.entity.ConsumedEvent;
+import webinar.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.TopicConfig;
