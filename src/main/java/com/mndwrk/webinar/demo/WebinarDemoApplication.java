@@ -10,7 +10,7 @@
  * ====================================
  */
 
-package webinar.demo;
+package com.mndwrk.webinar.demo;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +20,6 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 
 @SpringBootApplication
 public class WebinarDemoApplication {
-
-    private static final Logger log = LogManager.getLogger(WebinarDemoApplication.class);
 
     public static void main(final String[] args) {
 

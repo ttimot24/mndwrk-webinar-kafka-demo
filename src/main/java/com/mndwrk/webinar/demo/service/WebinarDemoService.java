@@ -10,10 +10,10 @@
  * ====================================
  */
 
-package webinar.demo.service;
+package com.mndwrk.webinar.demo.service;
 
-import webinar.demo.config.KafkaConfig;
-import webinar.demo.entity.Event;
+import com.mndwrk.webinar.demo.config.KafkaConfig;
+import com.mndwrk.webinar.demo.entity.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -35,7 +35,7 @@ public class WebinarDemoService {
 
         log.info("Consumed event {}", event);
 
-        kafkaTemplate.send(KafkaConfig.KAFKA_UPSTREAM_OUTBOUND_TOPIC_NAME, event.getSource(), event);
+        kafkaTemplate.send(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, event.getSource(), event);
 
     }
 

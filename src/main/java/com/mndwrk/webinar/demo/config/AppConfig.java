@@ -1,4 +1,4 @@
-package webinar.demo.config;
+package com.mndwrk.webinar.demo.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
