@@ -1,4 +1,4 @@
-package webinar.demo.config;
+package com.mndwrk.webinar.demo.config;
 
 import java.text.SimpleDateFormat;
 

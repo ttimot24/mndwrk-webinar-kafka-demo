@@ -1,4 +1,4 @@
-package webinar.demo.entity;
+package com.mndwrk.webinar.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 

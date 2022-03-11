@@ -1,6 +1,6 @@
-package webinar.demo.kafka;
+package com.mndwrk.webinar.demo.kafka;
 
-import webinar.demo.entity.ConsumedEvent;
+import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.listener.adapter.RecordFilterStrategy;

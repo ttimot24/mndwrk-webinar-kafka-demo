@@ -1,5 +1,4 @@
-# webinar-kafka-demo
-### MNDWRK - Apache Kafka Webinar
+# MNDWRK - Apache Kafka Webinar
 
 ## Getting started
 
@@ -21,4 +20,8 @@ kafka-console-producer --topic meetup-demo-inbound --bootstrap-server localhost:
 ```
 ```json
 {"source": "SENSOR", "description":"Something happend"}
+```
+
+```console
+kafka-console-consumer --topic meetup-demo-outbound --bootstrap-server localhost:9092
 ```

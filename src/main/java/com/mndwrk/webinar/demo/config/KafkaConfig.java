@@ -1,7 +1,8 @@
-package webinar.demo.config;
+package com.mndwrk.webinar.demo.config;
 
-import webinar.demo.entity.ConsumedEvent;
-import webinar.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
+import com.mndwrk.webinar.demo.entity.ConsumedEvent;
+import com.mndwrk.webinar.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.TopicConfig;
@@ -11,7 +12,6 @@ import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryC
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -21,12 +21,12 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-@EnableKafka
+@EnableKafkaStreams
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_UPSTREAM_INBOUND_TOPIC_NAME = "meetup-demo-inbound";
+    public static final String KAFKA_INBOUND_TOPIC_NAME = "meetup-demo-inbound";
 
-    public static final String KAFKA_UPSTREAM_OUTBOUND_TOPIC_NAME = "meetup-demo-outbound";
+    public static final String KAFKA_OUTBOUND_TOPIC_NAME = "meetup-demo-outbound";
 
     private final KafkaProperties properties;
     private final ObjectMapper objectMapper;
@@ -43,7 +43,7 @@ public class KafkaConfig {
     @Bean
     public NewTopic v2xInboundMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_UPSTREAM_INBOUND_TOPIC_NAME)
+        return TopicBuilder.name(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME)
                 .partitions(10)
                 .replicas(1)
                 .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
@@ -53,7 +53,7 @@ public class KafkaConfig {
     @Bean
     public NewTopic v2xOutboundMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_UPSTREAM_OUTBOUND_TOPIC_NAME)
+        return TopicBuilder.name(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME)
                 .partitions(10)
                 .replicas(1)
                 .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
