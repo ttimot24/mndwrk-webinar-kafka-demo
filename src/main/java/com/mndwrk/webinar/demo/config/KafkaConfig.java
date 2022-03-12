@@ -13,6 +13,8 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
+import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -92,4 +94,10 @@ public class KafkaConfig {
     public DefaultKafkaProducerFactoryCustomizer producerFactoryCustomizer() {
         return producerFactory -> producerFactory.setValueSerializer(new JsonSerializer<>(this.objectMapper));
     }
+
+    @Bean
+    public StreamsBuilderFactoryBeanConfigurer myStreamsBuilderFactoryBeanCustomizer(KafkaStreamsInfrastructureCustomizer infrastructureCustomizer) {
+        return factoryBean -> factoryBean.setInfrastructureCustomizer(infrastructureCustomizer);
+    }
+
 }
