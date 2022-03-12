@@ -1,5 +1,7 @@
 package com.mndwrk.webinar.demo.config;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import com.mndwrk.webinar.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
@@ -23,12 +25,12 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-@EnableKafkaStreams
+@EnableKafka
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_INBOUND_TOPIC_NAME = "meetup-demo-inbound";
+    public static final String KAFKA_INBOUND_TOPIC_NAME = "webinar-demo-inbound";
 
-    public static final String KAFKA_OUTBOUND_TOPIC_NAME = "meetup-demo-outbound";
+    public static final String KAFKA_OUTBOUND_TOPIC_NAME = "webinar-demo-outbound";
 
     private final KafkaProperties properties;
     private final ObjectMapper objectMapper;
@@ -93,11 +95,6 @@ public class KafkaConfig {
     @Bean
     public DefaultKafkaProducerFactoryCustomizer producerFactoryCustomizer() {
         return producerFactory -> producerFactory.setValueSerializer(new JsonSerializer<>(this.objectMapper));
-    }
-
-    @Bean
-    public StreamsBuilderFactoryBeanConfigurer myStreamsBuilderFactoryBeanCustomizer(KafkaStreamsInfrastructureCustomizer infrastructureCustomizer) {
-        return factoryBean -> factoryBean.setInfrastructureCustomizer(infrastructureCustomizer);
     }
 
 }

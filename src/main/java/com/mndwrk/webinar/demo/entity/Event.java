@@ -1,6 +1,7 @@
 package com.mndwrk.webinar.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import lombok.Builder;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -9,7 +10,7 @@ import java.util.UUID;
    @JsonSubTypes.Type(value = ConsumedEvent.class),
    @JsonSubTypes.Type(value = ProducedEvent.class),
 })
-
+@Builder
 public class Event {
 
     private UUID uuid;

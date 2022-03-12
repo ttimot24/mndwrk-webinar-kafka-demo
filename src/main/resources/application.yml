@@ -1,5 +1,7 @@
 spring:
-    application.name: meetup-demo
+    profiles:
+        active: kafka-streams
+    application.name: webinar-demo
     kafka:
         bootstrap-servers: localhost:9092
         properties:

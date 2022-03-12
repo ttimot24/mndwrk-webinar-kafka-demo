@@ -7,7 +7,7 @@ docker-compose up -d
 
 docker exec -it  webinar-kafka-demo_broker_1 /bin/bash
 
-kafka-console-producer --topic meetup-demo-inbound --bootstrap-server localhost:9092
+kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost:9092
 
 ```
 
@@ -23,5 +23,5 @@ kafka-console-producer --topic meetup-demo-inbound --bootstrap-server localhost:
 ```
 
 ```console
-kafka-console-consumer --topic meetup-demo-outbound --bootstrap-server localhost:9092
+kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhost:9092
 ```

@@ -9,8 +9,8 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>meetup.demo</groupId>
-    <artifactId>meetup-demo</artifactId>
+    <groupId>com.mndwrk.webinar</groupId>
+    <artifactId>webinar-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>${project.packaging}</packaging>
     <name>meetup-demo</name>

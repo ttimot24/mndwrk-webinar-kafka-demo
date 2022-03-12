@@ -16,12 +16,14 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@Profile("kafka-streams")
 public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomizer {
 
     final Serde<String> keySerde;
@@ -29,7 +31,6 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
     final Serde<ConsumedEvent> producedValueSerde;
 
     public KafkaStreamsCustomizer(final ObjectMapper objectMapper) {
-        log.info("-------------------------------------------------------------------------------");
         keySerde = Serdes.String();
         consumedValueSerde = new JsonSerde<>(ConsumedEvent.class, objectMapper);
         producedValueSerde = new JsonSerde<>(ConsumedEvent.class, objectMapper);
@@ -37,16 +38,7 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     @Override
     public void configureBuilder(final StreamsBuilder builder) {
-
-        final KStream<String, ConsumedEvent> stream =
-                builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
-                .filter((key, value) -> value.getSource().equals("TLC"))
-                .map((key, value) -> KeyValue.pair(key, value))
-                .filter((key, value) -> Objects.nonNull(value));
-
-        stream.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
-
-        log.info("Stream configured");
+        this.streamDiscriminate(builder);
     }
 
     @Override
@@ -55,12 +47,40 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
     }
 
 
-    public void table(final StreamsBuilder builder) {
+    private void streamFilter(final StreamsBuilder builder){
 
-        final KTable<String, ConsumedEvent> table = builder.table(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Materialized.with(keySerde, consumedValueSerde));
+        final KStream<String, ConsumedEvent> stream =
+                builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
+                        .filter((key, value) -> value.getSource().equals("TLC"))
+                        .map((key, value) -> KeyValue.pair(key, value))
+                        .filter((key, value) -> Objects.nonNull(value));
+
+        stream.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
+
+        log.info("Stream configured");
+
+    }
+
+
+   private void streamDiscriminate(final StreamsBuilder builder){
+
+        final KStream<String, ConsumedEvent> stream =
+        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
+               .map((key, value) -> KeyValue.pair(value.getSource(), value));
+
+        stream.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
+
+        log.info("Stream configured");
+
+    }
+
+
+    private void table(final StreamsBuilder builder) {
+
+        final KTable<Void, ConsumedEvent> table = builder.table(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Materialized.with(Serdes.Void(), consumedValueSerde));
         table.groupBy((key, value) -> KeyValue.pair(value.getSource(), value.getSource())).count().toStream().filter((key, value) -> Objects.nonNull(value)).to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME);
 
-        log.info("Message sent");
+        log.info("Table configured");
     }
 
 }
