@@ -111,19 +111,3 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
     }
 
 }
-
-/*
-
-        movingEntityKStream.leftJoin(srmStream,
-                (movingEntity, srm) -> V2XMovingEntityWrapper.builder()
-                .movingEntity(movingEntity)
-                .signal(srm)
-                .build(),
-                JoinWindows.of(interval)
-                .grace(gracePeriod),
-                StreamJoined.<String, V2XMovingEntity, SRMMessage>as("moving-entity-with-signal")
-        .withKeySerde(stringSerde)
-        .withValueSerde(movingEntitySerde)
-        .withOtherValueSerde(srmSerde))
-        .to(COMMSIGNIA_V2X_MOVING_ENTITY_WRAPPER_TOPIC, Produced.with(stringSerde, wrapperSerde));
-*/
