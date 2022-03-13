@@ -38,8 +38,7 @@ public class KafkaConfig {
     private final ObjectMapper objectMapper;
     private final String kafkaTopicRetention;
 
-    public KafkaConfig(KafkaProperties properties,
-                       ObjectMapper objectMapper,
+    public KafkaConfig(KafkaProperties properties, ObjectMapper objectMapper,
                        @Value(value = "${application.kafka.topic.retention:1000}") String kafkaTopicRetention) {
         this.properties = properties;
         this.objectMapper = objectMapper;
@@ -49,37 +48,27 @@ public class KafkaConfig {
     @Bean
     public NewTopic joinMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_JOIN_TOPIC_NAME)
-                .partitions(10)
-                .replicas(1)
-                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
-                .build();
+        return TopicBuilder.name(KafkaConfig.KAFKA_JOIN_TOPIC_NAME).partitions(10).replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention).build();
     }
 
     @Bean
     public NewTopic inboundMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME)
-                .partitions(10)
-                .replicas(1)
-                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
-                .build();
+        return TopicBuilder.name(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME).partitions(10).replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention).build();
     }
 
     @Bean
     public NewTopic outboundMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME)
-                .partitions(10)
-                .replicas(1)
-                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
-                .build();
+        return TopicBuilder.name(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME).partitions(10).replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention).build();
     }
 
     @Bean
     public ConsumerFactory<String, ConsumedEvent> consumerFactory() {
-        final JsonDeserializer<ConsumedEvent> deserializer = new JsonDeserializer<>(ConsumedEvent.class, this.objectMapper)
-                .trustedPackages("*");
+        final JsonDeserializer<ConsumedEvent> deserializer = new JsonDeserializer<>(ConsumedEvent.class, this.objectMapper).trustedPackages("*");
 
         final ErrorHandlingDeserializer<ConsumedEvent> deserializerWithErrorHandler = new ErrorHandlingDeserializer<>(deserializer);
 

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan
 @EnableAsync
 @EnableScheduling
-public class AppConfig implements WebMvcConfigurer{
-    
+public class AppConfig implements WebMvcConfigurer {
+
 
 }

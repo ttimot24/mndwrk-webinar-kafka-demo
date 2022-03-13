@@ -39,8 +39,10 @@ public class StreamsTesting {
 
         testDriver = new TopologyTestDriver(topology);
 
-        inputTopic = testDriver.createInputTopic(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, new Serdes.StringSerde().serializer(), new JsonSerde<>(ConsumedEvent.class).serializer());
-        outputTopic = testDriver.createOutputTopic(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, new Serdes.StringSerde().deserializer(), new JsonSerde<>(ProducedEvent.class).deserializer());
+        inputTopic = testDriver.createInputTopic(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, new Serdes.StringSerde().serializer(),
+                new JsonSerde<>(ConsumedEvent.class).serializer());
+        outputTopic = testDriver.createOutputTopic(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, new Serdes.StringSerde().deserializer(),
+                new JsonSerde<>(ProducedEvent.class).deserializer());
 
 
     }
@@ -51,7 +53,7 @@ public class StreamsTesting {
     }
 
     @Test
-    public void shouldAddKey(){
+    public void shouldAddKey() {
 
         final ConsumedEvent inboundEvent = ConsumedEvent.builder().source("TLC").description("Inbound message").build();
 

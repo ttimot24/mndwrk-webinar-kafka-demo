@@ -15,13 +15,8 @@ public class EventTypeTransformer implements Transformer<String, ConsumedEvent, 
 
     @Override
     public KeyValue<String, ProducedEvent> transform(String key, ConsumedEvent value) {
-        return KeyValue.pair(key, ProducedEvent
-                                      .builder()
-                                      .uuid(value.getUuid())
-                                      .source(value.getSource())
-                                      .description(value.getDescription())
-                                      .detectedAt(value.getDetectedAt())
-                                      .build());
+        return KeyValue.pair(key, ProducedEvent.builder().uuid(value.getUuid()).source(value.getSource()).description(value.getDescription())
+                .detectedAt(value.getDetectedAt()).build());
     }
 
     @Override

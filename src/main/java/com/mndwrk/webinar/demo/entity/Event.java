@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@JsonSubTypes({
-   @JsonSubTypes.Type(value = ConsumedEvent.class),
-   @JsonSubTypes.Type(value = ProducedEvent.class),
-})
+@JsonSubTypes({@JsonSubTypes.Type(value = ConsumedEvent.class), @JsonSubTypes.Type(value = ProducedEvent.class),})
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class Event {

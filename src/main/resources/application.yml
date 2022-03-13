@@ -1,20 +1,20 @@
 spring:
-    profiles:
-        active: kafka-streams
-    application.name: webinar-demo
-    kafka:
-        bootstrap-servers: localhost:9092
-        properties:
-        #    spring.json.add.type.headers: false
-            spring.json.trusted.packages: "*"
-        consumer:
-            group-id: ${spring.application.name}
-            key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-            value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-            properties:
-                spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
-                spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-                spring.json.add.type.headers: false
-                spring.json.trusted.packages: "*"
-        listener:
-            concurrency: 10
+  profiles:
+    active: kafka-streams
+  application.name: webinar-demo
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      #    spring.json.add.type.headers: false
+      spring.json.trusted.packages: "*"
+    consumer:
+      group-id: ${spring.application.name}
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.add.type.headers: false
+        spring.json.trusted.packages: "*"
+    listener:
+      concurrency: 10
