@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>com.mndwrk.webinar</groupId>
-    <artifactId>webinar-demo</artifactId>
+    <artifactId>kafka-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>${project.packaging}</packaging>
-    <name>meetup-demo</name>
+    <name>kafka-demo</name>
 
     <properties>
         <java.version>11</java.version>
@@ -97,6 +97,11 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams-test-utils</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
