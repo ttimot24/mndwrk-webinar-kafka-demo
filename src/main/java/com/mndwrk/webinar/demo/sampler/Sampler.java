@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import com.mndwrk.webinar.demo.config.KafkaConfig;
+import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import com.mndwrk.webinar.demo.entity.Event;
 import com.mndwrk.webinar.demo.entity.ProducedEvent;
 import org.springframework.beans.factory.InitializingBean;
@@ -27,7 +28,7 @@ public class Sampler {
     @Scheduled(cron = "* * * * * *")
     public void sampler() throws Exception {
 
-            Event producedEvent = ProducedEvent.builder()
+            Event producedEvent = ConsumedEvent.builder()
                                                .uuid(UUID.randomUUID())
                                                .detectedAt(OffsetDateTime.now())
                                                .source(getRandom(sources))

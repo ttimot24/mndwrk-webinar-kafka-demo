@@ -5,7 +5,7 @@ spring:
     kafka:
         bootstrap-servers: localhost:9092
         properties:
-            spring.json.add.type.headers: false
+        #    spring.json.add.type.headers: false
             spring.json.trusted.packages: "*"
         consumer:
             group-id: ${spring.application.name}

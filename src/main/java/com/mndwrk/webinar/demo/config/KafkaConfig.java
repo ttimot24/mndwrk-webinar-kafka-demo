@@ -30,6 +30,8 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaConfig {
     public static final String KAFKA_INBOUND_TOPIC_NAME = "webinar-demo-inbound";
 
+    public static final String KAFKA_JOIN_TOPIC_NAME = "webinar-demo-join";
+
     public static final String KAFKA_OUTBOUND_TOPIC_NAME = "webinar-demo-outbound";
 
     private final KafkaProperties properties;
@@ -45,7 +47,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic v2xInboundMessageTopic() {
+    public NewTopic joinMessageTopic() {
+
+        return TopicBuilder.name(KafkaConfig.KAFKA_JOIN_TOPIC_NAME)
+                .partitions(10)
+                .replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
+                .build();
+    }
+
+    @Bean
+    public NewTopic inboundMessageTopic() {
 
         return TopicBuilder.name(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME)
                 .partitions(10)
@@ -55,7 +67,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic v2xOutboundMessageTopic() {
+    public NewTopic outboundMessageTopic() {
 
         return TopicBuilder.name(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME)
                 .partitions(10)

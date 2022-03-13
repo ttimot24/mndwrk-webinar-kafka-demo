@@ -25,3 +25,8 @@ kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost
 ```console
 kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhost:9092
 ```
+
+### Restart Broker
+```console
+sudo docker-compose down -v && sudo docker-compose up -d
+```
