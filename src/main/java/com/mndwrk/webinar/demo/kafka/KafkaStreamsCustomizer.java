@@ -15,12 +15,9 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.JoinWindows;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.StreamJoined;
 import org.springframework.context.annotation.Profile;
@@ -48,21 +45,14 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
     @Override
     public void configureBuilder(final StreamsBuilder builder) {
 
-        this.streamJoin(builder);
+        this.streamDiscriminate(builder);
     }
-
-    @Override
-    public void configureTopology(final Topology topology) {
-        log.info("Topology configured");
-    }
-
 
     private void streamFilter(final StreamsBuilder builder) {
 
         final KStream<String, ProducedEvent> stream =
                 builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
-                        .filter((key, value) -> value.getSource().equals("TLC"))
-                        .transform(EventTypeTransformer::new);
+                        .filter((key, value) -> value.getSource().equals("TLC")).transform(EventTypeTransformer::new);
 
         stream.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
 
@@ -73,12 +63,9 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     private void streamDiscriminate(final StreamsBuilder builder) {
 
-        final KStream<String, ProducedEvent> stream =
-                builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
-                        .map((key, value) -> KeyValue.pair(value.getSource(), value))
-                        .transform(EventTypeTransformer::new);
-
-        stream.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
+        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
+                .map((key, value) -> KeyValue.pair(value.getSource(), value)).transform(EventTypeTransformer::new)
+                .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
 
         log.info("Stream configured");
 
@@ -92,11 +79,9 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
                 builder.stream(KafkaConfig.KAFKA_JOIN_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde)).selectKey((k, v) -> v.getSource());
 
         stream.join(joinStream, (s, v) -> JoinedEvent.builder().joinedAt(OffsetDateTime.now()).eventLeft(s).eventRight(v).build(),
-                JoinWindows.of(Duration.ofMillis(5000)).grace(Duration.ZERO),
-                StreamJoined.<String, ConsumedEvent, ConsumedEvent>as("joined-event")
-                        .withKeySerde(keySerde)
-                        .withValueSerde(consumedValueSerde)
-                        .withOtherValueSerde(consumedValueSerde))
+                        JoinWindows.of(Duration.ofMillis(5000)).grace(Duration.ZERO),
+                        StreamJoined.<String, ConsumedEvent, ConsumedEvent>as("joined-event").withKeySerde(keySerde).withValueSerde(consumedValueSerde)
+                                .withOtherValueSerde(consumedValueSerde))
                 .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, joinedValueSerde));
     }
 

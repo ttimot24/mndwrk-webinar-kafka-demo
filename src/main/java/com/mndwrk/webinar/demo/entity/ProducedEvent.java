@@ -4,7 +4,9 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class ProducedEvent extends Event {
 
     @Builder
