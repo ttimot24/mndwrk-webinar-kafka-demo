@@ -100,14 +100,15 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
                 .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, joinedValueSerde));
     }
 
-    private void table(final StreamsBuilder builder) {
+    /*private void table(final StreamsBuilder builder) {
 
         final KTable<Void, ConsumedEvent> table =
-                builder.table(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Materialized.with(Serdes.Void(), consumedValueSerde));
-        table.groupBy((key, value) -> KeyValue.pair(value.getSource(), value.getSource())).count().toStream()
+                builder.table(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Materialized.with(keySerde, consumedValueSerde));
+
+                table.groupBy((key, value) -> KeyValue.pair(value.getSource(), value.getSource())).count().toStream()
                 .filter((key, value) -> Objects.nonNull(value)).to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME);
 
         log.info("Table configured");
-    }
+    } */
 
 }
