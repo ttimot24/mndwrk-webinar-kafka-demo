@@ -12,12 +12,15 @@ kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost
 ```
 
 #### Payload
+
 ```json
 {"source": "TLC", "description":"Green signal"}
 ```
+
 ```json
 {"source": "CCTV", "description":"People detected"}
 ```
+
 ```json
 {"source": "SENSOR", "description":"Something happend"}
 ```
@@ -27,6 +30,7 @@ kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhos
 ```
 
 ### Restart Broker
+
 ```console
 sudo docker-compose down -v && sudo docker-compose up -d
 ```

@@ -25,7 +25,8 @@ public class KafkaStreamsConfig {
             factoryBean.setInfrastructureCustomizer(infrastructureCustomizer);
 
             //Built in: LogAndContinue
-            factoryBean.getStreamsConfiguration().put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, StreamsDeserializationExceptionHandler.class);
+            factoryBean.getStreamsConfiguration()
+                    .put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, StreamsDeserializationExceptionHandler.class);
         };
     }
 

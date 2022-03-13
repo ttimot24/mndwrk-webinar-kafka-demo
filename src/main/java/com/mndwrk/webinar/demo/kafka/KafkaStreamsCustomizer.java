@@ -50,11 +50,9 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     private void streamFilter(final StreamsBuilder builder) {
 
-        final KStream<String, ProducedEvent> stream =
-                builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
-                        .filter((key, value) -> value.getSource().equals("TLC")).transform(EventTypeTransformer::new);
-
-        stream.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
+        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
+                .filter((key, value) -> value.getSource().equals("TLC")).transform(EventTypeTransformer::new)
+                .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
 
         log.info("Stream configured");
 
