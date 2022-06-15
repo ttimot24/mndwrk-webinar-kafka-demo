@@ -1,16 +1,16 @@
-package webinar.demo.entity;
+package com.mndwrk.webinar.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@JsonSubTypes({
-   @JsonSubTypes.Type(value = ConsumedEvent.class),
-   @JsonSubTypes.Type(value = ProducedEvent.class),
-})
-
-public class Event {
+@JsonSubTypes({@JsonSubTypes.Type(value = ConsumedEvent.class), @JsonSubTypes.Type(value = ProducedEvent.class),})
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class Event {
 
     private UUID uuid;
     private String source;

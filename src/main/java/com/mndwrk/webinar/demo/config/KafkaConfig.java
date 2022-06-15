@@ -1,7 +1,10 @@
-package webinar.demo.config;
+package com.mndwrk.webinar.demo.config;
 
-import webinar.demo.entity.ConsumedEvent;
-import webinar.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
+import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
+import com.mndwrk.webinar.demo.entity.ConsumedEvent;
+import com.mndwrk.webinar.demo.kafka.KafkaMeetupDemoEventFilterStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.TopicConfig;
@@ -11,8 +14,9 @@ import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryC
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
+import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -24,16 +28,17 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @EnableKafka
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_UPSTREAM_INBOUND_TOPIC_NAME = "meetup-demo-inbound";
+    public static final String KAFKA_INBOUND_TOPIC_NAME = "webinar-demo-inbound";
 
-    public static final String KAFKA_UPSTREAM_OUTBOUND_TOPIC_NAME = "meetup-demo-outbound";
+    public static final String KAFKA_JOIN_TOPIC_NAME = "webinar-demo-join";
+
+    public static final String KAFKA_OUTBOUND_TOPIC_NAME = "webinar-demo-outbound";
 
     private final KafkaProperties properties;
     private final ObjectMapper objectMapper;
     private final String kafkaTopicRetention;
 
-    public KafkaConfig(KafkaProperties properties,
-                       ObjectMapper objectMapper,
+    public KafkaConfig(KafkaProperties properties, ObjectMapper objectMapper,
                        @Value(value = "${application.kafka.topic.retention:1000}") String kafkaTopicRetention) {
         this.properties = properties;
         this.objectMapper = objectMapper;
@@ -41,29 +46,29 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic v2xInboundMessageTopic() {
+    public NewTopic joinMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_UPSTREAM_INBOUND_TOPIC_NAME)
-                .partitions(10)
-                .replicas(1)
-                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
-                .build();
+        return TopicBuilder.name(KafkaConfig.KAFKA_JOIN_TOPIC_NAME).partitions(10).replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention).build();
     }
 
     @Bean
-    public NewTopic v2xOutboundMessageTopic() {
+    public NewTopic inboundMessageTopic() {
 
-        return TopicBuilder.name(KafkaConfig.KAFKA_UPSTREAM_OUTBOUND_TOPIC_NAME)
-                .partitions(10)
-                .replicas(1)
-                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention)
-                .build();
+        return TopicBuilder.name(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME).partitions(10).replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention).build();
+    }
+
+    @Bean
+    public NewTopic outboundMessageTopic() {
+
+        return TopicBuilder.name(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME).partitions(10).replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, this.kafkaTopicRetention).build();
     }
 
     @Bean
     public ConsumerFactory<String, ConsumedEvent> consumerFactory() {
-        final JsonDeserializer<ConsumedEvent> deserializer = new JsonDeserializer<>(ConsumedEvent.class, this.objectMapper)
-                .trustedPackages("*");
+        final JsonDeserializer<ConsumedEvent> deserializer = new JsonDeserializer<>(ConsumedEvent.class, this.objectMapper).trustedPackages("*");
 
         final ErrorHandlingDeserializer<ConsumedEvent> deserializerWithErrorHandler = new ErrorHandlingDeserializer<>(deserializer);
 
@@ -92,4 +97,5 @@ public class KafkaConfig {
     public DefaultKafkaProducerFactoryCustomizer producerFactoryCustomizer() {
         return producerFactory -> producerFactory.setValueSerializer(new JsonSerializer<>(this.objectMapper));
     }
+
 }

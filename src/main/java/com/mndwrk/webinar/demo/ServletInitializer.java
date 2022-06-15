@@ -10,7 +10,7 @@
  * ====================================
  */
 
-package webinar.demo;
+package com.mndwrk.webinar.demo;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

@@ -1,6 +1,6 @@
-package webinar.demo.kafka;
+package com.mndwrk.webinar.demo.kafka;
 
-import webinar.demo.entity.ConsumedEvent;
+import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.listener.adapter.RecordFilterStrategy;
@@ -19,7 +19,7 @@ public class KafkaMeetupDemoEventFilterStrategy implements RecordFilterStrategy<
 
         boolean filtered = FILTER_OUT.contains(record.value().getSource());
 
-        if(filtered) {
+        if (filtered) {
             log.info("Event filtered out by source: {}", record.value().getSource());
         }
         return filtered;
