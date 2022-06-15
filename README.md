@@ -1,5 +1,9 @@
 # MNDWRK - Apache Kafka Webinar
 
+- [Webinar I. - Apache Kafka](https://www.mndwrk.com/events/esemenyvezerelt-szoftver-apache-kafka-fejlesztesi-alapok)
+- [Webinar II. - Kafka Streams](https://www.mndwrk.com/events/esemenyvezerelt-szoftver-apache-kafka-fejlesztesi-alapok-ii)
+- [Webinar III. - ksqlDB](https://www.mndwrk.com/events/esemenyvezerelt-szoftver-apache-kafka-fejlesztesi-alapok-iii)
+
 ## Getting started
 
 ```console
