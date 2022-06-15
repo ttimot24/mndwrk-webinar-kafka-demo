@@ -25,6 +25,11 @@ kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost
 {"source": "SENSOR", "description":"Something happend"}
 ```
 
+### ksqlDB
+```sh
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+```
+
 ```console
 kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhost:9092
 ```
