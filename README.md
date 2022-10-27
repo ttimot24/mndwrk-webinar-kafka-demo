@@ -39,3 +39,8 @@ kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhos
 ```console
 sudo docker-compose down -v && sudo docker-compose up -d
 ```
+
+### Register Schema
+```
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d@src/main/resources/schemas/json/webinar-demo-outbund.json http://localhost:8081/subjects/webinar-demo-outbund/versions | jq
+```
