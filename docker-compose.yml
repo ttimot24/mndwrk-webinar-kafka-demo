@@ -38,14 +38,36 @@ services:
       KAFKA_LOG_RETENTION_HOURS: 0
       KAFKA_LOG_RETENTION_MINUTES: 10
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.30.0
+  schema-registry:
+    image: confluentinc/cp-schema-registry:6.1.1
     restart: always
+    depends_on:
+      - broker
     ports:
-      - "9000:9000"
+      - "8081:8081"
     environment:
-      KAFKA_BROKERCONNECT: "broker:29092"
-      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  redpanda-console:
+    #image: docker.redpanda.com/vectorized/console:master-0a8fce8
+    image: docker.redpanda.com/vectorized/console:v2.0.2
+    restart: always
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "9000:8080"
+    environment:
+      SERVER_BASEPATH: /redpanda
+      #METRICSNAMESPACE: redpanda-console
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-broker:29092}
+      KAFKA_SCHEMAREGISTRY_ENABLED: "true"
+      KAFKA_SCHEMAREGISTRY_URLS: "http://schema-registry:8081"
+      CONNECT_ENABLED: "true"
+      CONNECT_CLUSTERS_NAME: connect-cluster
+      CONNECT_CLUSTERS_URL: "http://connect:8083"
 
   ksqldb-server:
     image: confluentinc/cp-ksqldb-server:7.1.1
@@ -53,6 +75,7 @@ services:
     container_name: ksqldb-server
     depends_on:
       - broker
+      - schema-registry
     ports:
       - "8088:8088"
     environment:
@@ -60,12 +83,14 @@ services:
       KSQL_BOOTSTRAP_SERVERS: broker:29092
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+      KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry.cddmp:8081"
 
   ksqldb-cli:
     image: confluentinc/cp-ksqldb-cli:7.1.1
     container_name: ksqldb-cli
     depends_on:
       - broker
+      - schema-registry
       - ksqldb-server
     entrypoint: /bin/sh
     tty: true
