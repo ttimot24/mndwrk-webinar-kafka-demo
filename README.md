@@ -47,8 +47,13 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 
 ```sql
-CREATE STREAM webinarDemoInbound (uuid VARCHAR, source VARCHAR, summary VARCHAR, detectedAt VARCHAR)
+CREATE STREAM consumedEvent (uuid VARCHAR, source VARCHAR, summary VARCHAR, detectedAt VARCHAR)
 WITH (kafka_topic='webinar-demo-inbound', value_format='json', partitions=10);
+```
+
+```sql
+CREATE STREAM producedEvent (uuid VARCHAR, source VARCHAR, summary VARCHAR, detectedAt VARCHAR)
+WITH (kafka_topic='webinar-demo-outbound', value_format='json', partitions=10);
 ```
 
 ```sql
