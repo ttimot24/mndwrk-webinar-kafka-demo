@@ -83,7 +83,7 @@ services:
       KSQL_BOOTSTRAP_SERVERS: broker:29092
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
-      KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry.cddmp:8081"
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
 
   ksqldb-cli:
     image: confluentinc/cp-ksqldb-cli:7.1.1
