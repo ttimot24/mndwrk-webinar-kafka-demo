@@ -17,7 +17,7 @@ public class StreamsDeserializationExceptionHandler implements DeserializationEx
 
     @Override
     public DeserializationHandlerResponse handle(ProcessorContext processorContext, ConsumerRecord<byte[], byte[]> consumerRecord, Exception e) {
-        log.error("Could not deserialize message...");
+        log.error("Could not deserialize message: {}", new String(consumerRecord.value()));
         return DeserializationHandlerResponse.CONTINUE;
     }
 }

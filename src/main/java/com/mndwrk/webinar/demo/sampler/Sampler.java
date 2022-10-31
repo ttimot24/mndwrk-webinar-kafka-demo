@@ -29,7 +29,7 @@ public class Sampler {
     public void sampler() throws Exception {
 
         Event producedEvent = ConsumedEvent.builder().uuid(UUID.randomUUID()).detectedAt(OffsetDateTime.now()).source(getRandom(sources))
-                .description("Event from sampler").build();
+                .summary("Event from sampler").build();
 
         kafkaTemplate.send(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, producedEvent);
 

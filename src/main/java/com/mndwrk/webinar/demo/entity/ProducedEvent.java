@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class ProducedEvent extends Event {
 
     @Builder
-    public ProducedEvent(UUID uuid, String source, String description, OffsetDateTime detectedAt) {
-        super(uuid, source, description, detectedAt);
+    public ProducedEvent(UUID uuid, String source, String summary, OffsetDateTime detectedAt) {
+        super(uuid, source, summary, detectedAt);
     }
 
 }

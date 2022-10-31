@@ -5,6 +5,7 @@
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/entity/JoinedEvent.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/config/KafkaConfig.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/service/WebinarDemoService.java
+/home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/target/generated-sources/jsonschema2pojo/com/mndwrk/webinar/demo/model/WebinarDemoInbound.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/error/StreamsDeserializationExceptionHandler.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/sampler/Sampler.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/entity/ConsumedEvent.java
@@ -15,3 +16,4 @@
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/WebinarDemoApplication.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/kafka/KafkaMessageListener.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/config/KafkaStreamsConfig.java
+/home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/target/generated-sources/jsonschema2pojo/com/mndwrk/webinar/demo/model/ConsumedEvent.java

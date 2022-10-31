@@ -3,7 +3,7 @@ version: '3'
 services:
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.1.1
+    image: confluentinc/cp-zookeeper:7.2.2
     restart: always
     ports:
       - "2181:2181"
@@ -15,7 +15,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:6.1.1
+    image: confluentinc/cp-kafka:7.2.2
     restart: always
     depends_on:
       - zookeeper
@@ -39,7 +39,7 @@ services:
       KAFKA_LOG_RETENTION_MINUTES: 10
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:6.1.1
+    image: confluentinc/cp-schema-registry:7.2.2
     restart: always
     depends_on:
       - broker
@@ -70,7 +70,7 @@ services:
       CONNECT_CLUSTERS_URL: "http://connect:8083"
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:7.1.1
+    image: confluentinc/cp-ksqldb-server:7.2.2
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -86,7 +86,7 @@ services:
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:7.1.1
+    image: confluentinc/cp-ksqldb-cli:7.2.2
     container_name: ksqldb-cli
     depends_on:
       - broker

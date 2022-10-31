@@ -55,7 +55,7 @@ public class StreamsTesting {
     @Test
     public void shouldAddKey() {
 
-        final ConsumedEvent inboundEvent = ConsumedEvent.builder().source("TLC").description("Inbound message").build();
+        final ConsumedEvent inboundEvent = ConsumedEvent.builder().source("TLC").summary("Inbound message").build();
 
         inputTopic.pipeInput(null, inboundEvent);
         assertThat(outputTopic.readKeyValue().key).isEqualTo("TLX");

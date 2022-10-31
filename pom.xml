@@ -19,9 +19,16 @@
     <properties>
         <java.version>11</java.version>
         <project.packaging>war</project.packaging>
-        <io.confluent.version>7.2.1</io.confluent.version>
+        <io.confluent.version>7.2.2</io.confluent.version>
         <avro.version>1.11.0</avro.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -44,6 +51,16 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>2.13.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-streams-json-schema-serde</artifactId>
+                <version>7.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>1.11.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -127,6 +144,14 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-streams-json-schema-serde</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
     </dependencies>
 
 
@@ -150,22 +175,45 @@
                 <artifactId>kafka-schema-registry-maven-plugin</artifactId>
                 <version>7.0.0</version>
                 <configuration>
-                    <subjects />
+                    <subjects>
+                        <consumedEvent>${basedir}/src/main/resources/schemas/json/webinar-demo-inbound.json</consumedEvent>
+                    </subjects>
+                    <schemaTypes>
+                        <consumedEvent>JSON</consumedEvent>
+                    </schemaTypes>
                     <schemaRegistryUrls>
                         <param>http://localhost:8081</param>
                     </schemaRegistryUrls>
-                    <outputDirectory>${basedir}/src/main/resources/schemas/json</outputDirectory>
-                    <schemaExtension>.json</schemaExtension>
+                    <outputDirectory>${basedir}/src/main/avro</outputDirectory>
+                   <!-- <outputDirectory>${basedir}/src/main/avro/</outputDirectory> -->
+                    <schemaExtension>.avsc</schemaExtension>
                     <subjectPatterns>
-                        <param>^consumedEvent</param>
+                        <param>^webinar-demo-inbound-(key|value)$</param>
                     </subjectPatterns>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
                 <version>1.1.2</version>
                 <configuration>
+                    <dateTimeType>java.time.OffsetDateTime</dateTimeType>
                     <sourceDirectory>${basedir}/src/main/resources/schemas/json</sourceDirectory>
                     <targetPackage>com.mndwrk.webinar.demo.model</targetPackage>
                 </configuration>

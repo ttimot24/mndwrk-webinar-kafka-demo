@@ -10,6 +10,9 @@ import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import com.mndwrk.webinar.demo.entity.JoinedEvent;
 import com.mndwrk.webinar.demo.entity.ProducedEvent;
 import com.mndwrk.webinar.demo.transformer.EventTypeTransformer;
+import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
+import io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -35,11 +38,17 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
     final Serde<ProducedEvent> producedValueSerde;
     final Serde<JoinedEvent> joinedValueSerde;
 
+    final KafkaJsonSchemaSerde kafkaJsonSchemaSerde;
+
     public KafkaStreamsCustomizer(final ObjectMapper objectMapper) {
         keySerde = Serdes.String();
         consumedValueSerde = new JsonSerde<>(ConsumedEvent.class, objectMapper);
         producedValueSerde = new JsonSerde<>(ProducedEvent.class, objectMapper);
         joinedValueSerde = new JsonSerde<>(JoinedEvent.class, objectMapper);
+
+        SchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient("http://localhost:8081",10);
+
+        kafkaJsonSchemaSerde = new KafkaJsonSchemaSerde(schemaRegistryClient);
     }
 
     @Override
@@ -50,8 +59,8 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     private void streamFilter(final StreamsBuilder builder) {
 
-        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
-                .filter((key, value) -> value.getSource().equals("TLC")).transform(EventTypeTransformer::new)
+        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, kafkaJsonSchemaSerde))
+              /*  .filter((key, value) -> value.getSource().equals("TLC")).transform(EventTypeTransformer::new) */
                 .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
 
         log.info("Stream configured");
@@ -61,8 +70,8 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     private void streamDiscriminate(final StreamsBuilder builder) {
 
-        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde))
-                .map((key, value) -> KeyValue.pair(value.getSource(), value)).transform(EventTypeTransformer::new)
+        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, kafkaJsonSchemaSerde))
+              /*  .map((key, value) -> KeyValue.pair(value.getSource(), value)).transform(EventTypeTransformer::new) */
                 .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
 
         log.info("Stream configured");
@@ -71,15 +80,15 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     private void streamJoin(final StreamsBuilder builder) {
         final KStream<String, ConsumedEvent> stream =
-                builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde)).selectKey((k, v) -> v.getSource());
+                builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, kafkaJsonSchemaSerde))/*.selectKey((k, v) -> v.getSource())*/;
 
         final KStream<String, ConsumedEvent> joinStream =
-                builder.stream(KafkaConfig.KAFKA_JOIN_TOPIC_NAME, Consumed.with(keySerde, consumedValueSerde)).selectKey((k, v) -> v.getSource());
+                builder.stream(KafkaConfig.KAFKA_JOIN_TOPIC_NAME, Consumed.with(keySerde, kafkaJsonSchemaSerde))/*.selectKey((k, v) -> v.getSource())*/;
 
         stream.join(joinStream, (s, v) -> JoinedEvent.builder().joinedAt(OffsetDateTime.now()).eventLeft(s).eventRight(v).build(),
                         JoinWindows.of(Duration.ofMillis(5000)).grace(Duration.ZERO),
-                        StreamJoined.<String, ConsumedEvent, ConsumedEvent>as("joined-event").withKeySerde(keySerde).withValueSerde(consumedValueSerde)
-                                .withOtherValueSerde(consumedValueSerde))
+                        StreamJoined.<String, ConsumedEvent, ConsumedEvent>as("joined-event").withKeySerde(keySerde).withValueSerde(kafkaJsonSchemaSerde)
+                                .withOtherValueSerde(kafkaJsonSchemaSerde))
                 .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, joinedValueSerde));
     }
 

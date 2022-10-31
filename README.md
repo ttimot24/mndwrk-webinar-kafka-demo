@@ -47,15 +47,20 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 
 ```sql
-CREATE STREAM consumedEvent (uuid VARCHAR, source VARCHAR, summary VARCHAR, detectedAt VARCHAR)
-WITH (kafka_topic='webinar-demo-inbound', value_format='json', partitions=10);
+CREATE STREAM IF NOT EXISTS consumedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
+WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='JSON_SR', partitions=10);
 ```
 
 ```sql
-CREATE STREAM producedEvent (uuid VARCHAR, source VARCHAR, summary VARCHAR, detectedAt VARCHAR)
-WITH (kafka_topic='webinar-demo-outbound', value_format='json', partitions=10);
+CREATE STREAM IF NOT EXISTS producedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
+WITH (kafka_topic='webinar-demo-outbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='JSON_SR', partitions=10);
 ```
 
 ```sql
-INSERT INTO webinarDemoInbound (uuid, source, summary, detectedAt) VALUES ('e707450e-93d4-4c53-9f04-03aab3666b8b', 'CCTV' , 'KSQLDBStream', '2022');
+INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-11-08 18:00:00');
+```
+
+```sql
+CREATE STREAM webinarDemoInboundAvro (uuid STRING, source STRING, summary STRING, detectedAt STRING)
+WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = 'detectedAt', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10);
 ```

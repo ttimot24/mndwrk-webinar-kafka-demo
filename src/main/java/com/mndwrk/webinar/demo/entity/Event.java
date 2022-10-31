@@ -14,7 +14,7 @@ public abstract class Event {
 
     private UUID uuid;
     private String source;
-    private String description;
+    private String summary;
     private OffsetDateTime detectedAt;
 
     public UUID getUuid() {
@@ -33,12 +33,12 @@ public abstract class Event {
         this.source = source;
     }
 
-    public String getDescription() {
-        return description;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSummary(String description) {
+        this.summary = summary;
     }
 
     public OffsetDateTime getDetectedAt() {
@@ -51,6 +51,6 @@ public abstract class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "uuid=" + uuid + ", source='" + source + '\'' + ", description='" + description + '\'' + ", detectedAt=" + detectedAt + '}';
+        return "Event{" + "uuid=" + uuid + ", source='" + source + '\'' + ", summary='" + summary + '\'' + ", detectedAt=" + detectedAt + '}';
     }
 }
