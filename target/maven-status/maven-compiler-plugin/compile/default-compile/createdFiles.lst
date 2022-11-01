@@ -1,5 +1,6 @@
 com/mndwrk/webinar/demo/kafka/KafkaStreamsCustomizer.class
 com/mndwrk/webinar/demo/model/ConsumedEvent.class
+com/mndwrk/webinar/demo/transformer/AvroEventTypeTransformer.class
 com/mndwrk/webinar/demo/entity/JoinedEvent$JoinedEventBuilder.class
 com/mndwrk/webinar/demo/service/WebinarDemoService.class
 com/mndwrk/webinar/demo/config/KafkaStreamsConfig.class
@@ -17,6 +18,8 @@ com/mndwrk/webinar/demo/config/ObjectMapperConfig.class
 com/mndwrk/webinar/demo/error/StreamsDeserializationExceptionHandler.class
 com/mndwrk/webinar/demo/transformer/EventTypeTransformer.class
 com/mndwrk/webinar/demo/config/AppConfig.class
+io/confluent/ksql/avro_schemas/KsqlDataSourceSchema.class
 com/mndwrk/webinar/demo/entity/ConsumedEvent$ConsumedEventBuilder.class
+io/confluent/ksql/avro_schemas/KsqlDataSourceSchema$Builder.class
 com/mndwrk/webinar/demo/config/KafkaConfig.class
 com/mndwrk/webinar/demo/kafka/KafkaMeetupDemoEventFilterStrategy.class

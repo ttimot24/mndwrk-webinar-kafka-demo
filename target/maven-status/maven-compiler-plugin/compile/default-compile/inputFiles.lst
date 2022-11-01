@@ -1,4 +1,5 @@
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/entity/Event.java
+/home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/target/generated-sources/io/confluent/ksql/avro_schemas/KsqlDataSourceSchema.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/kafka/KafkaMeetupDemoEventFilterStrategy.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/kafka/KafkaStreamsCustomizer.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/transformer/EventTypeTransformer.java
@@ -8,6 +9,7 @@
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/target/generated-sources/jsonschema2pojo/com/mndwrk/webinar/demo/model/WebinarDemoInbound.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/error/StreamsDeserializationExceptionHandler.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/sampler/Sampler.java
+/home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/transformer/AvroEventTypeTransformer.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/entity/ConsumedEvent.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/ServletInitializer.java
 /home/linux/IdeaProjects/mndwrk-webinar-kafka-demo/src/main/java/com/mndwrk/webinar/demo/config/AppConfig.java

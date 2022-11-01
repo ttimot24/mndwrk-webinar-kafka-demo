@@ -48,12 +48,12 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 ```sql
 CREATE STREAM IF NOT EXISTS consumedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
-WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='JSON_SR', partitions=10);
+WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10);
 ```
 
 ```sql
 CREATE STREAM IF NOT EXISTS producedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
-WITH (kafka_topic='webinar-demo-outbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='JSON_SR', partitions=10);
+WITH (kafka_topic='webinar-demo-outbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10);
 ```
 
 ```sql

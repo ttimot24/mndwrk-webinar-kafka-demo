@@ -9,7 +9,6 @@ spring:
       spring.json.trusted.packages: "*"
       schema.registry.url: "http://localhost:8081"
     consumer:
-      schema.registry.url: "http://localhost:8081"
       group-id: ${spring.application.name}
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
@@ -20,6 +19,3 @@ spring:
         spring.json.trusted.packages: "*"
     listener:
       concurrency: 10
-    streams:
-      properties:
-        schema.registry.url: "http://localhost:8081"
