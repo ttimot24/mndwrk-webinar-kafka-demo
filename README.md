@@ -48,7 +48,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 ```sql
 CREATE STREAM IF NOT EXISTS consumedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
-WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10);
+WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10, VALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent');
 ```
 
 ```sql
@@ -57,7 +57,7 @@ WITH (kafka_topic='webinar-demo-outbound', TIMESTAMP = '`detectedAt`', TIMESTAMP
 ```
 
 ```sql
-INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-11-08 18:00:00');
+INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-10-18T09:54:30.297Z');
 ```
 
 ```sql

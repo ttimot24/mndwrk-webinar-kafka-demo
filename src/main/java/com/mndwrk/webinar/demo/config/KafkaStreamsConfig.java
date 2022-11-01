@@ -1,11 +1,10 @@
 package com.mndwrk.webinar.demo.config;
 
 import com.mndwrk.webinar.demo.error.StreamsDeserializationExceptionHandler;
-import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
-import io.confluent.kafka.streams.serdes.avro.ReflectionAvroSerde;
-import io.confluent.ksql.avro_schemas.KsqlDataSourceSchema;
-import org.apache.kafka.common.serialization.Serde;
+import com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent;
+import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
 import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Profile("kafka-streams")
 @EnableKafkaStreams
@@ -26,19 +28,25 @@ public class KafkaStreamsConfig {
     public StreamsBuilderFactoryBeanConfigurer infrastructureCustomizer(KafkaStreamsInfrastructureCustomizer infrastructureCustomizer) {
         return factoryBean -> {
             factoryBean.setInfrastructureCustomizer(infrastructureCustomizer);
-
             //Built in: LogAndContinue
             factoryBean.getStreamsConfiguration()
-                    .put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, StreamsDeserializationExceptionHandler.class);
+                    .putAll(Map.of(
+                       KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true,
+                       StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, StreamsDeserializationExceptionHandler.class
+                    ));
         };
     }
 
     @Bean
-    public Serde<KsqlDataSourceSchema> getSchemaAwareSerDe(@Value("${spring.kafka.properties.schema.registry.url}") String schemaRegistryUrl){
+    public SpecificAvroSerde<AvroConsumedEvent> getSchemaAwareSerDe(@Value("${spring.kafka.properties.schema.registry.url}") String schemaRegistryUrl){
 
-        final SchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryUrl,10);
+        final Map<String, Object> serdeConfig = Collections
+                .singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
 
-        return new ReflectionAvroSerde(schemaRegistryClient, KsqlDataSourceSchema.class);
+        final SpecificAvroSerde specificAvroSerde = new SpecificAvroSerde<>();
+        specificAvroSerde.configure(serdeConfig, false);
+
+        return specificAvroSerde;
     }
 
 }

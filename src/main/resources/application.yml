@@ -8,14 +8,23 @@ spring:
       #    spring.json.add.type.headers: false
       spring.json.trusted.packages: "*"
       schema.registry.url: "http://localhost:8081"
+      value.deserializer.specific.avro.reader: true
     consumer:
       group-id: ${spring.application.name}
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value.deserializer.specific.avro.reader: true
       properties:
         spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
-        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
         spring.json.add.type.headers: false
         spring.json.trusted.packages: "*"
+        spring.value.deserializer.specific.avro.reader: true
     listener:
       concurrency: 10
+    streams:
+      properties:
+        value.deserializer.specific.avro.reader: true
+
+
+    #value.deserializer.specific.avro.reader=true

@@ -1,17 +1,14 @@
 package com.mndwrk.webinar.demo.kafka;
 
-import java.time.Duration;
-import java.time.OffsetDateTime;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mndwrk.webinar.demo.config.KafkaConfig;
+import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import com.mndwrk.webinar.demo.entity.JoinedEvent;
 import com.mndwrk.webinar.demo.entity.ProducedEvent;
-import com.mndwrk.webinar.demo.model.ConsumedEvent;
+import com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent;
 import com.mndwrk.webinar.demo.transformer.AvroEventTypeTransformer;
 import com.mndwrk.webinar.demo.transformer.EventTypeTransformer;
-import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
-import io.confluent.ksql.avro_schemas.KsqlDataSourceSchema;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -34,16 +31,16 @@ import org.springframework.stereotype.Component;
 public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomizer {
 
     final Serde<String> keySerde;
-    final Serde<KsqlDataSourceSchema> consumedValueSerde;
+    final Serde<ConsumedEvent> consumedValueSerde;
     final Serde<ProducedEvent> producedValueSerde;
     final Serde<JoinedEvent> joinedValueSerde;
 
     @Autowired
-    Serde<KsqlDataSourceSchema> kafkaAvroSchemaSerde;
+    SpecificAvroSerde<AvroConsumedEvent> kafkaAvroSchemaSerde;
 
     public KafkaStreamsCustomizer(final ObjectMapper objectMapper) {
         this.keySerde = Serdes.String();
-        this.consumedValueSerde = new JsonSerde<>(KsqlDataSourceSchema.class, objectMapper);
+        this.consumedValueSerde = new JsonSerde<>(ConsumedEvent.class, objectMapper);
         this.producedValueSerde = new JsonSerde<>(ProducedEvent.class, objectMapper);
         this.joinedValueSerde = new JsonSerde<>(JoinedEvent.class, objectMapper);
     }
@@ -57,9 +54,8 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
     private void streamFilter(final StreamsBuilder builder) {
 
         builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, kafkaAvroSchemaSerde))
-                .filter((key, value) -> value.getSource().equals("TLC")).transform(AvroEventTypeTransformer::new)
-                        .foreach((k,v) -> System.out.println(v.getSummary()));
-                //.to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
+                /*.filter((key, value) -> value.getSource().equals("TLC"))*/.transform(AvroEventTypeTransformer::new)
+                .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
 
         log.info("Stream configured");
 
