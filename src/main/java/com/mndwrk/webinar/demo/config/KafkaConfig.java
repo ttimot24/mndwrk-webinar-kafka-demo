@@ -1,5 +1,8 @@
 package com.mndwrk.webinar.demo.config;
 
+import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
+import io.confluent.kafka.streams.serdes.avro.ReflectionAvroSerializer;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
@@ -24,6 +27,9 @@ import org.springframework.kafka.listener.adapter.RecordFilterStrategy;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+
+import java.util.Collections;
+import java.util.Map;
 
 @EnableKafka
 @Configuration
@@ -94,8 +100,16 @@ public class KafkaConfig {
     }
 
     @Bean
-    public DefaultKafkaProducerFactoryCustomizer producerFactoryCustomizer() {
-        return producerFactory -> producerFactory.setValueSerializer(new JsonSerializer<>(this.objectMapper));
+    public DefaultKafkaProducerFactoryCustomizer producerFactoryCustomizer(@Value("${spring.kafka.properties.schema.registry.url}") String schemaRegistryUrl) {
+
+        final Map<String, Object> serdeConfig = Collections
+                .singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+
+        final SpecificAvroSerde specificAvroSerde = new SpecificAvroSerde<>();
+        specificAvroSerde.configure(serdeConfig, false);
+        specificAvroSerde.serializer();
+
+        return producerFactory -> producerFactory.setValueSerializer(specificAvroSerde.serializer());
     }
 
 }

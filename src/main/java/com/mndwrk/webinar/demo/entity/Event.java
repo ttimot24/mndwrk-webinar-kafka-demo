@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -15,7 +16,8 @@ public abstract class Event {
     private UUID uuid;
     private String source;
     private String summary;
-    private OffsetDateTime detectedAt;
+
+    private long detectedAt;
 
     public UUID getUuid() {
         return uuid;
@@ -41,11 +43,11 @@ public abstract class Event {
         this.summary = summary;
     }
 
-    public OffsetDateTime getDetectedAt() {
+    public long getDetectedAt() {
         return detectedAt;
     }
 
-    public void setDetectedAt(OffsetDateTime detectedAt) {
+    public void setDetectedAt(long detectedAt) {
         this.detectedAt = detectedAt;
     }
 

@@ -45,22 +45,29 @@ curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d@src/ma
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ```
 
-
 ```sql
-CREATE STREAM IF NOT EXISTS consumedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
-WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10, VALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent');
+SET 'auto.offset.reset' = 'earliest';
 ```
 
 ```sql
-CREATE STREAM IF NOT EXISTS producedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` VARCHAR)
-WITH (kafka_topic='webinar-demo-outbound', TIMESTAMP = '`detectedAt`', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10);
+CREATE STREAM IF NOT EXISTS consumedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` TIMESTAMP)
+WITH (kafka_topic='webinar-demo-inbound', value_format='AVRO', partitions=10, VALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent');
 ```
 
 ```sql
-INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-10-18T09:54:30.297Z');
+CREATE STREAM IF NOT EXISTS producedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `processedBy` VARCHAR, `detectedAt` TIMESTAMP)
+WITH (kafka_topic='webinar-demo-outbound', value_format='AVRO', partitions=10, VALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroProducedEvent');
 ```
 
 ```sql
-CREATE STREAM webinarDemoInboundAvro (uuid STRING, source STRING, summary STRING, detectedAt STRING)
-WITH (kafka_topic='webinar-demo-inbound', TIMESTAMP = 'detectedAt', TIMESTAMP_FORMAT = 'yyyy-MM-dd HH:mm:ss', value_format='AVRO', partitions=10);
+INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-11-03T11:39:03.001');
+INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES ('aad4374b-42dd-4876-bdd2-a4a8c836f7c3', 'CCTV' , 'KSQLDBStream', '2022-11-03T11:39:03.001');
+```
+
+```sql
+CREATE TABLE record_count AS SELECT `source`, count(*) as record_count FROM consumedEvent WINDOW TUMBLING(SIZE 5 SECONDS) GROUP BY `source` EMIT CHANGES;
+```
+
+```sql
+CREATE STREAM joined_streams AS SELECT * FROM consumedEvent ce LEFT JOIN producedEvent pe WITHIN 10 SECONDS ON ce.`uuid` = pe.`uuid` EMIT CHANGES;
 ```

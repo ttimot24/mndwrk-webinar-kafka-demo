@@ -161,6 +161,11 @@
             <groupId>io.confluent</groupId>
             <artifactId>kafka-streams-avro-serde</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.confluent.ksql</groupId>
+            <artifactId>ksqldb-api-client</artifactId>
+            <version>7.0.0</version>
+        </dependency>
     </dependencies>
 
 
@@ -198,6 +203,7 @@
                     <schemaExtension>.avsc</schemaExtension>
                     <subjectPatterns>
                         <param>^webinar-demo-inbound-(key|value)$</param>
+                        <param>^webinar-demo-outbound-(key|value)$</param>
                     </subjectPatterns>
                 </configuration>
             </plugin>

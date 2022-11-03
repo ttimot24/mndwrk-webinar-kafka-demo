@@ -2,9 +2,12 @@ package com.mndwrk.webinar.demo.config;
 
 import com.mndwrk.webinar.demo.error.StreamsDeserializationExceptionHandler;
 import com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent;
+import com.mndwrk.webinar.demo.ksqldb.AvroProducedEvent;
+import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,14 +40,16 @@ public class KafkaStreamsConfig {
         };
     }
 
+
     @Bean
-    public SpecificAvroSerde<AvroConsumedEvent> getSchemaAwareSerDe(@Value("${spring.kafka.properties.schema.registry.url}") String schemaRegistryUrl){
+    public SpecificAvroSerde getSchemaAwareSerDe(@Value("${spring.kafka.properties.schema.registry.url}") String schemaRegistryUrl){
 
         final Map<String, Object> serdeConfig = Collections
                 .singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
 
         final SpecificAvroSerde specificAvroSerde = new SpecificAvroSerde<>();
         specificAvroSerde.configure(serdeConfig, false);
+        specificAvroSerde.serializer();
 
         return specificAvroSerde;
     }

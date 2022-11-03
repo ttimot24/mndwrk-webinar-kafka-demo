@@ -6,6 +6,7 @@ import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import com.mndwrk.webinar.demo.entity.JoinedEvent;
 import com.mndwrk.webinar.demo.entity.ProducedEvent;
 import com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent;
+import com.mndwrk.webinar.demo.ksqldb.AvroProducedEvent;
 import com.mndwrk.webinar.demo.transformer.AvroEventTypeTransformer;
 import com.mndwrk.webinar.demo.transformer.EventTypeTransformer;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
@@ -20,6 +21,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.StreamJoined;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
 import org.springframework.kafka.support.serializer.JsonSerde;
@@ -30,19 +32,22 @@ import org.springframework.stereotype.Component;
 @Profile("kafka-streams")
 public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomizer {
 
+    @Value("${spring.application.name}")
+    private String streamAppName;
+
     final Serde<String> keySerde;
-    final Serde<ConsumedEvent> consumedValueSerde;
-    final Serde<ProducedEvent> producedValueSerde;
-    final Serde<JoinedEvent> joinedValueSerde;
 
     @Autowired
-    SpecificAvroSerde<AvroConsumedEvent> kafkaAvroSchemaSerde;
+    SpecificAvroSerde<AvroConsumedEvent> kafkaAvroConsumerSerde;
 
-    public KafkaStreamsCustomizer(final ObjectMapper objectMapper) {
+
+    @Autowired
+    SpecificAvroSerde<AvroProducedEvent> kafkaAvroProducerSerde;
+
+    public KafkaStreamsCustomizer(SpecificAvroSerde<AvroConsumedEvent> kafkaAvroConsumerSerde, SpecificAvroSerde<AvroProducedEvent> kafkaAvroProducerSerde) {
         this.keySerde = Serdes.String();
-        this.consumedValueSerde = new JsonSerde<>(ConsumedEvent.class, objectMapper);
-        this.producedValueSerde = new JsonSerde<>(ProducedEvent.class, objectMapper);
-        this.joinedValueSerde = new JsonSerde<>(JoinedEvent.class, objectMapper);
+        this.kafkaAvroConsumerSerde = kafkaAvroConsumerSerde;
+        this.kafkaAvroProducerSerde = kafkaAvroProducerSerde;
     }
 
     @Override
@@ -53,9 +58,10 @@ public class KafkaStreamsCustomizer implements KafkaStreamsInfrastructureCustomi
 
     private void streamFilter(final StreamsBuilder builder) {
 
-        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, kafkaAvroSchemaSerde))
+        builder.stream(KafkaConfig.KAFKA_INBOUND_TOPIC_NAME, Consumed.with(keySerde, kafkaAvroConsumerSerde))
                 /*.filter((key, value) -> value.getSource().equals("TLC"))*/.transform(AvroEventTypeTransformer::new)
-                .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, producedValueSerde));
+                .peek((k,v) -> v.setProcessedBy(streamAppName))
+                .to(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, Produced.with(keySerde, kafkaAvroProducerSerde));
 
         log.info("Stream configured");
 

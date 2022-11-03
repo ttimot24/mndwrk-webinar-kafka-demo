@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -31,13 +32,12 @@ public class WebinarDemoService {
 
     public void handleMessage(final Event event) {
         event.setUuid(UUID.randomUUID());
-        event.setDetectedAt(OffsetDateTime.now());
+        event.setDetectedAt(Instant.now().getEpochSecond());
 
         log.info("Consumed event {}", event);
 
         kafkaTemplate.send(KafkaConfig.KAFKA_OUTBOUND_TOPIC_NAME, event.getSource(), event);
 
     }
-
 
 }
