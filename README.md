@@ -60,14 +60,23 @@ WITH (kafka_topic='webinar-demo-outbound', value_format='AVRO', partitions=10, V
 ```
 
 ```sql
+CREATE STREAM joined_streams WITH (KAFKA_TOPIC='webinar-demo-join') AS SELECT * FROM consumedEvent ce LEFT JOIN producedEvent pe WITHIN 10 SECONDS ON ce.`uuid` = pe.`uuid` EMIT CHANGES;
+```
+
+```sql
 INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-11-03T11:39:03.001');
 INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES ('aad4374b-42dd-4876-bdd2-a4a8c836f7c3', 'CCTV' , 'KSQLDBStream', '2022-11-03T11:39:03.001');
 ```
 
 ```sql
-CREATE TABLE record_count AS SELECT `source`, count(*) as record_count FROM consumedEvent WINDOW TUMBLING(SIZE 5 SECONDS) GROUP BY `source` EMIT CHANGES;
+CREATE OR REPLACE TABLE record_count_table AS SELECT ce.`uuid` PRIMAR KEY, count(*) as record_count FROM consumedEvent ce WINDOW TUMBLING(SIZE 10 SECONDS) GROUP BY ce.`uuid` EMIT CHANGES;
+
+--CREATE TABLE record_count AS SELECT `source`, count(*) as record_count FROM consumedEvent WINDOW TUMBLING(SIZE 5 SECONDS) GROUP BY `source` EMIT CHANGES;
 ```
 
 ```sql
-CREATE STREAM joined_streams AS SELECT * FROM consumedEvent ce LEFT JOIN producedEvent pe WITHIN 10 SECONDS ON ce.`uuid` = pe.`uuid` EMIT CHANGES;
+SELECT `uuid`, FORMAT_TIMESTAMP(FROM_UNIXTIME(windowstart), 'yyyy-MM-dd HH:mm:ss.SSS'), FORMAT_TIMESTAMP(FROM_UNIXTIME(windowend), 'yyyy-MM-dd HH:mm:ss.SSS'), record_count FROM record_count_table;
 ```
+
+EXPLAIN | DESCRIBE;
+POSTMAN REST CALL
