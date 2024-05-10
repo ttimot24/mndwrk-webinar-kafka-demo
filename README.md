@@ -6,6 +6,8 @@
 Welcome to the MNDWRK webinar demo repository! In this webinar, we'll explore the powerful Kafka ecosystem in conjunction with Spring Boot, showcasing how to build scalable, event-driven applications with ease.
 we'll demonstrate the integration of Kafka, a distributed streaming platform, with Spring Boot, a popular Java framework for building microservices. Through practical examples, we'll illustrate how Kafka facilitates real-time data processing and messaging within an application ecosystem.
 
+[`#kafka`](#) [`#kstreams`](#) [`#ksqldb`](#) [`#connect`](#) [`#schema-registry`](#) [`#zilla`](#)
+
 ## Webinar links
 
  - [Apache Kafka Ecosystem](https://www.mndwrk.com/events/digitalk-webinar-apache-kafka-ecosystem)
@@ -60,8 +62,8 @@ SET 'auto.offset.reset' = 'earliest';
 ```
 
 ```sql
-CREATE STREAM IF NOT EXISTS consumedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `detectedAt` TIMESTAMP)
-WITH (kafka_topic='webinar-demo-inbound', value_format='AVRO', partitions=10, VALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent');
+CREATE OR REPLACE STREAM MNDWRK_ZILLA_REQUEST (SOURCE STRING, DESCRIPTION STRING) WITH (KAFKA_TOPIC='mndwrk-zilla-request', KEY_FORMAT='KAFKA', PARTITIONS=1, VALUE_FORMAT='AVRO', V
+ALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent');
 ```
 
 ```sql
@@ -91,8 +93,9 @@ SELECT `uuid`, FORMAT_TIMESTAMP(FROM_UNIXTIME(windowstart), 'yyyy-MM-dd HH:mm:ss
 
 ```
 
-
+```sql
 DROP STREAM IF EXISTS <stream_name> DELETE TOPIC;
 DROP TABLE IF EXISTS <table_name> DELETE TOPIC;
 EXPLAIN | DESCRIBE;
 POSTMAN REST CALL
+```

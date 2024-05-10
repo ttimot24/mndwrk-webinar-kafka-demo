@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "AvroConsumedEvent",
+  "namespace": "com.mndwrk.webinar.demo.ksqldb",
+  "fields": [
+    {
+      "name": "source",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+  ]
+}

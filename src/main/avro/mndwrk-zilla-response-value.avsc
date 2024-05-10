@@ -1,0 +1,45 @@
+{
+  "type": "record",
+  "name": "AvroProducedEvent",
+  "namespace": "com.mndwrk.webinar.demo.ksqldb",
+  "fields": [
+    {
+      "name": "uuid",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "source",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+    {
+      "name": "detectedAt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "connect.version": 1,
+          "connect.name": "org.apache.kafka.connect.data.Timestamp",
+          "logicalType": "timestamp-millis"
+        }
+      ],
+      "default": null
+    }
+  ],
+  "connect.name": "com.mndwrk.webinar.demo.ksqldb.AvroProducedEvent"
+}
