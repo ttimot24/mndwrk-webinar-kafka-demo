@@ -1,12 +1,28 @@
 name: zilla-mndwrk
 
+telemetry:
+  metrics:
+    - http.request.size
+    - http.response.size
+    - stream.opens.sent
+    - stream.closes.sent
+    
+  exporters:
+    prometheus_metric_exporter:
+      type: prometheus
+      options:
+        endpoints:
+          - scheme: http
+            path: /metrics
+            port: 7190
+
 bindings:
   mndwrk_tcp_server:
     type: tcp
     kind: server
     options:
       host: 0.0.0.0
-      port: 7114
+      port: 8080
     exit: mndwrk_http_server
   
   mndwrk_http_server:
@@ -16,8 +32,11 @@ bindings:
       - when:
           - headers:
               :scheme: http
-              :authority: localhost:7114
+              :authority: localhost:8080
         exit: mndwrk_sensor_service
+    telemetry:
+      metrics:
+        - http.*
 
   mndwrk_sensor_service:
     type: http-kafka
@@ -29,14 +48,14 @@ bindings:
         exit: mndwrk_kafka_cache_client
         with:
           capability: produce
-          topic: webinar-demo-inbound
+          topic: mndwrk-zilla-request
       - when:
           - method: GET
             path: /api/v1/sensor-data
         exit: mndwrk_kafka_cache_client
         with:
           capability: fetch
-          topic: webinar-demo-outbound
+          topic: mndwrk-zilla-response
           merge:
             content-type: application/json
 
@@ -49,7 +68,7 @@ bindings:
     kind: cache_server
     options:
       bootstrap:
-        - items-snapshots
+        - mndwrk-zilla-response
     exit: mndwrk_kafka_client
   mndwrk_kafka_client:
     type: kafka

@@ -99,17 +99,17 @@ services:
   zilla:
      image: ghcr.io/aklivity/zilla:latest
      container_name: zilla
-     command:  start -v -e
-     restart: unless-stopped
+     command:  ["start", "-v", "-e"]
      depends_on:
-       - broker
+       - broker 
      ports:
+       - "8080:8080"
        - "7114:7114"
+       - "7190:7190"
      environment:
        KAFKA_HOST: "broker"
-       KAFKA_PORT: "9092"
-       KEYSTORE_PASSWORD: "generated"
-       API_URL: "http://localhost:7114"
+       KAFKA_PORT: "29092"
+       API_URL: "http://localhost:8080"
      volumes:
        - ./zilla.yml:/etc/zilla/zilla.yaml
 
@@ -122,5 +122,4 @@ volumes:
 
 networks:
   default:
-    name: webinar-network
-
+    name: mndwrk-network
