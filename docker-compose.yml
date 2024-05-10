@@ -96,6 +96,23 @@ services:
     entrypoint: /bin/sh
     tty: true
 
+  zilla:
+     image: ghcr.io/aklivity/zilla:latest
+     container_name: zilla
+     command:  start -v -e
+     restart: unless-stopped
+     depends_on:
+       - broker
+     ports:
+       - "7114:7114"
+     environment:
+       KAFKA_HOST: "broker"
+       KAFKA_PORT: "9092"
+       KEYSTORE_PASSWORD: "generated"
+       API_URL: "http://localhost:7114"
+     volumes:
+       - ./zilla.yml:/etc/zilla/zilla.yaml
+
 volumes:
   zookeeper-data:
   zookeeper-log:
