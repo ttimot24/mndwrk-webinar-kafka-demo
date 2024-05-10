@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "982149e6-ffd0-4d40-95f4-da3d0a6b0767",
+		"name": "MNDWRK Webinar",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20771295"
+	},
+	"item": [
+		{
+			"name": "Zilla Sensor Data",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Idempotency-Key",
+						"value": "1-unique-key",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"source\": \"TLC\",\n    \"description\": \"Green signal\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/sensor-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"sensor-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Zilla Sensor Data",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/sensor-data/3e28e208-22fd-436c-bcf6-72618e7db4f7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"sensor-data",
+						"3e28e208-22fd-436c-bcf6-72618e7db4f7"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
