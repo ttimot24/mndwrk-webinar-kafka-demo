@@ -107,6 +107,9 @@ services:
        - "7114:7114"
        - "7190:7190"
      environment:
+       KAFKA_BOOTSTRAP_SERVER: "broker:29092"
+       SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+       ZILLA_INCUBATOR_ENABLED: true
        KAFKA_HOST: "broker"
        KAFKA_PORT: "29092"
        API_URL: "http://localhost:8080"

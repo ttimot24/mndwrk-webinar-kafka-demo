@@ -8,6 +8,8 @@ telemetry:
     - stream.closes.sent
     
   exporters:
+    stdout_logs_exporter:
+      type: stdout
     prometheus_metric_exporter:
       type: prometheus
       options:
@@ -15,6 +17,13 @@ telemetry:
           - scheme: http
             path: /metrics
             port: 7190
+
+catalogs:
+  schema-registry:
+    type: karapace
+    options: 
+      url: ${env.SCHEMA_REGISTRY_URL} 
+      context: default
 
 bindings:
   mndwrk_tcp_server:
@@ -24,6 +33,9 @@ bindings:
       host: 0.0.0.0
       port: 8080
     exit: mndwrk_http_server
+    telemetry:
+      metrics:
+        - http.*
   
   mndwrk_http_server:
     type: http
@@ -41,6 +53,9 @@ bindings:
   mndwrk_sensor_service:
     type: http-kafka
     kind: proxy
+    telemetry:
+      metrics:
+        - http.*
     routes:
       - when:
           - method: POST
@@ -49,9 +64,10 @@ bindings:
         with:
           capability: produce
           topic: mndwrk-zilla-request
+          key: ${idempotencyKey}
       - when:
           - method: GET
-            path: /api/v1/sensor-data
+            path: /api/v1/sensor-data/${idempotencyKey}
         exit: mndwrk_kafka_cache_client
         with:
           capability: fetch
@@ -66,6 +82,9 @@ bindings:
   mndwrk_kafka_cache_server:
     type: kafka
     kind: cache_server
+    telemetry:
+      metrics:
+        - http.*
     options:
       bootstrap:
         - mndwrk-zilla-response
@@ -73,10 +92,19 @@ bindings:
   mndwrk_kafka_client:
     type: kafka
     kind: client
+    telemetry:
+      metrics:
+        - http.*
+    options:
+      servers:
+        - ${{env.KAFKA_BOOTSTRAP_SERVER}}
     exit: mndwrk_kafka_tcp_client
   mndwrk_kafka_tcp_client:
     type: tcp
     kind: client
+    telemetry:
+      metrics:
+        - http.*
     options:
       host: ${{env.KAFKA_HOST}}
       port: ${{env.KAFKA_PORT}}
