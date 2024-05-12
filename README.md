@@ -14,13 +14,18 @@ we'll demonstrate the integration of Kafka, a distributed streaming platform, wi
 
 ## Getting started
 
-```console
+#### Architecture
+
+![architecture](./architecture/mndwrk-demo.drawio.png)
+
+#### Docker
+
+```sh
 docker-compose up -d
 
 docker exec -it  webinar-kafka-demo_broker_1 /bin/bash
 
 kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost:9092
-
 ```
 
 #### Payload
@@ -37,22 +42,22 @@ kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost
 {"source": "SENSOR", "description":"Something happend"}
 ```
 
-```console
+```sh
 kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhost:9092
 ```
 
-### Restart Broker
+#### Restart Broker
 
-```console
+```sh
 sudo docker-compose down -v && sudo docker-compose up -d
 ```
 
-### Register Schema
-```
+#### Register Schema
+```sh
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d@src/main/resources/schemas/json/webinar-demo-outbound.json http://localhost:8081/subjects/webinar-demo-outbund/versions | jq
 ```
 
-### ksqlDB
+#### ksqlDB
 ```sh
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ```
@@ -93,9 +98,15 @@ SELECT `uuid`, FORMAT_TIMESTAMP(FROM_UNIXTIME(windowstart), 'yyyy-MM-dd HH:mm:ss
 
 ```
 
+#### Other
+
 ```sql
 DROP STREAM IF EXISTS <stream_name> DELETE TOPIC;
 DROP TABLE IF EXISTS <table_name> DELETE TOPIC;
 EXPLAIN | DESCRIBE;
 POSTMAN REST CALL
 ```
+
+##
+
+Project by Timot Tarjani [(@ttimot24)](https://github.com/ttimot24)
