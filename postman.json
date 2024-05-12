@@ -36,7 +36,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"source\": \"TLC\",\n    \"description\": \"Green signal\"\n}"
+					"raw": "{\n    \"source\": { \"string\": \"TLC\"},\n    \"description\": { \"string\": \"Green Signal\" }\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/api/v1/sensor-data",
@@ -76,7 +76,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/sensor-data/3e28e208-22fd-436c-bcf6-72618e7db4f7",
+					"raw": "http://localhost:8080/api/v1/sensor-data",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -85,8 +85,7 @@
 					"path": [
 						"api",
 						"v1",
-						"sensor-data",
-						"3e28e208-22fd-436c-bcf6-72618e7db4f7"
+						"sensor-data"
 					]
 				}
 			},

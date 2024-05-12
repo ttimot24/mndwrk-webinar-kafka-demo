@@ -71,29 +71,11 @@ CREATE OR REPLACE STREAM MNDWRK_ZILLA_REQUEST WITH (KAFKA_TOPIC='mndwrk-zilla-re
 ```
 
 ```sql
-SELECT SOURCE, DESCRIPTION, TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as DETECTED_AT FROM MNDWRK_ZILLA_REQUEST EMIT CHANGES;
+SELECT UUID() as `uuid`, `source`, `description`, TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt` FROM MNDWRK_ZILLA_REQUEST EMIT CHANGES;
 ```
 
 ```sql
-CREATE STREAM joined_streams WITH (KAFKA_TOPIC='webinar-demo-join') AS SELECT * FROM consumedEvent ce LEFT JOIN producedEvent pe WITHIN 10 SECONDS ON ce.`uuid` = pe.`uuid` EMIT CHANGES;
-```
-
-```sql
-CREATE OR REPLACE TABLE record_count_table AS SELECT ce.`uuid` PRIMAR KEY, count(*) as record_count FROM consumedEvent ce WINDOW TUMBLING(SIZE 10 SECONDS) GROUP BY ce.`uuid` EMIT CHANGES;
-
---CREATE TABLE record_count AS SELECT `source`, count(*) as record_count FROM consumedEvent WINDOW TUMBLING(SIZE 5 SECONDS) GROUP BY `source` EMIT CHANGES;
-```
-
-```sql
-INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES (UUID(), 'CCTV' , 'KSQLDBStream', '2022-11-03T11:39:03.001');
-INSERT INTO consumedEvent (`uuid`, `source`, `summary`, `detectedAt`) VALUES ('aad4374b-42dd-4876-bdd2-a4a8c836f7c3', 'CCTV' , 'KSQLDBStream', '2022-11-03T11:39:03.001');
-```
-
-```sql
-SELECT `uuid`, FORMAT_TIMESTAMP(FROM_UNIXTIME(windowstart), 'yyyy-MM-dd HH:mm:ss.SSS') as wstart, FORMAT_TIMESTAMP(FROM_UNIXTIME(windowend), 'yyyy-MM-dd HH:mm:ss.SSS') wend, record_count FROM record_count_table;
-
--- WHERE record_count > 1 EMIT CHANGES;
-
+CREATE OR REPLACE STREAM MNDWRK_ZILLA_RESPONSE WITH (KAFKA_TOPIC='mndwrk-zilla-response', KEY_FORMAT='KAFKA', KEY='uuid', PARTITIONS=1, VALUE_FORMAT='AVRO') AS SELECT UUID() as `uuid`, SOURCE as `source`, DESCRIPTION as `description`, TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt` FROM MNDWRK_ZILLA_REQUEST GROUP BY uuid EMIT CHANGES;
 ```
 
 #### Other
@@ -102,7 +84,6 @@ SELECT `uuid`, FORMAT_TIMESTAMP(FROM_UNIXTIME(windowstart), 'yyyy-MM-dd HH:mm:ss
 DROP STREAM IF EXISTS <stream_name> DELETE TOPIC;
 DROP TABLE IF EXISTS <table_name> DELETE TOPIC;
 EXPLAIN | DESCRIBE;
-POSTMAN REST CALL
 ```
 
 ##
