@@ -22,7 +22,7 @@ catalogs:
   schema-registry:
     type: karapace
     options: 
-      url: ${env.SCHEMA_REGISTRY_URL} 
+      url: ${{env.SCHEMA_REGISTRY_URL}} 
       context: default
 
 bindings:
@@ -67,17 +67,38 @@ bindings:
           key: ${idempotencyKey}
       - when:
           - method: GET
-            path: /api/v1/sensor-data/${idempotencyKey}
+            path: /api/v1/sensor-data/{id}
         exit: mndwrk_kafka_cache_client
         with:
           capability: fetch
           topic: mndwrk-zilla-response
+          filters:
+            - key: ${params.id}
           merge:
             content-type: application/json
+
 
   mndwrk_kafka_cache_client:
     type: kafka
     kind: cache_client
+    options:
+      topics:
+        - name: mndwrk-zilla-request
+          value:
+            model: avro
+            view: json
+            catalog:
+              schema-registry:
+                - strategy: topic
+                  version: latest
+        - name: mndwrk-zilla-response
+          value:
+            model: avro
+            view: json
+            catalog:
+              schema-registry:
+                - strategy: topic
+                  version: latest
     exit: mndwrk_kafka_cache_server
   mndwrk_kafka_cache_server:
     type: kafka
@@ -86,8 +107,25 @@ bindings:
       metrics:
         - http.*
     options:
-      bootstrap:
-        - mndwrk-zilla-response
+      #bootstrap:
+      #  - mndwrk-zilla-response
+      topics:
+        - name: mndwrk-zilla-request
+          value:
+            model: avro
+            view: json
+            catalog:
+              schema-registry:
+                - strategy: topic
+                  version: latest
+        - name: mndwrk-zilla-response
+          value:
+            model: avro
+            view: json
+            catalog:
+              schema-registry:
+                - strategy: topic
+                  version: latest
     exit: mndwrk_kafka_client
   mndwrk_kafka_client:
     type: kafka

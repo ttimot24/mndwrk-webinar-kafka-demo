@@ -1,1 +1,26 @@
-{"$schema":"http://json-schema.org/draft-04/schema#","type":"object","additionalProperties":false,"properties":{"uuid":{"type":"string"},"source":{"type":"string"},"summary":{"type":"string"},"detectedAt":{"type":"string","format":"date-time"}},"required":["uuid","source","summary","detectedAt"]}
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "uuid": {
+            "type": "string"
+        },
+        "source": {
+            "type": "string"
+        },
+        "summary": {
+            "type": "string"
+        },
+        "detectedAt": {
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "uuid",
+        "source",
+        "summary",
+        "detectedAt"
+    ]
+}

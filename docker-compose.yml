@@ -51,12 +51,10 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   redpanda-console:
-    #image: docker.redpanda.com/vectorized/console:master-0a8fce8
     image: docker.redpanda.com/vectorized/console:latest
     restart: always
     depends_on:
       - broker
-      - schema-registry
     ports:
       - "9000:8080"
     environment:
@@ -97,11 +95,12 @@ services:
     tty: true
 
   zilla:
-     image: ghcr.io/aklivity/zilla:latest
+     image: ghcr.io/aklivity/zilla:0.9.79
      container_name: zilla
      command:  ["start", "-v", "-e"]
      depends_on:
-       - broker 
+       - broker
+       - schema-registry 
      ports:
        - "8080:8080"
        - "7114:7114"

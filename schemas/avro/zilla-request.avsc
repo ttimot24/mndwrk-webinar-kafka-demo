@@ -1,0 +1,23 @@
+{
+    "type": "record",
+    "name": "ZillaRequest",
+    "namespace": "com.mndwrk.webinar.demo.zilla",
+    "fields": [
+        {
+            "name": "source",
+            "type": [
+                "null",
+                "string"
+            ],
+            "default": null
+        },
+        {
+            "name": "description",
+            "type": [
+                "null",
+                "string"
+            ],
+            "default": null
+        }
+    ]
+}

@@ -54,7 +54,7 @@ sudo docker-compose down -v && sudo docker-compose up -d
 
 #### Register Schema
 ```sh
-curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d@src/main/resources/schemas/json/webinar-demo-outbound.json http://localhost:8081/subjects/webinar-demo-outbund/versions | jq
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+avro" -d@schemas/avro/zilla-request.avsc http://localhost:8081/subjects/mndwrk-zilla-request-value/versions | jq
 ```
 
 #### ksqlDB
@@ -67,13 +67,11 @@ SET 'auto.offset.reset' = 'earliest';
 ```
 
 ```sql
-CREATE OR REPLACE STREAM MNDWRK_ZILLA_REQUEST (SOURCE STRING, DESCRIPTION STRING) WITH (KAFKA_TOPIC='mndwrk-zilla-request', KEY_FORMAT='KAFKA', PARTITIONS=1, VALUE_FORMAT='AVRO', V
-ALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroConsumedEvent');
+CREATE OR REPLACE STREAM MNDWRK_ZILLA_REQUEST WITH (KAFKA_TOPIC='mndwrk-zilla-request', KEY_FORMAT='KAFKA', PARTITIONS=1, VALUE_FORMAT='AVRO');
 ```
 
 ```sql
-CREATE STREAM IF NOT EXISTS producedEvent (`uuid` VARCHAR, `source` VARCHAR, `summary` VARCHAR, `processedBy` VARCHAR, `detectedAt` TIMESTAMP)
-WITH (kafka_topic='webinar-demo-outbound', value_format='AVRO', partitions=10, VALUE_SCHEMA_FULL_NAME='com.mndwrk.webinar.demo.ksqldb.AvroProducedEvent');
+SELECT SOURCE, DESCRIPTION, TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as DETECTED_AT FROM MNDWRK_ZILLA_REQUEST EMIT CHANGES;
 ```
 
 ```sql
