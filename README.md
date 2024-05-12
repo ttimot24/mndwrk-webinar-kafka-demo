@@ -1,7 +1,7 @@
 ![cover](./src/main/resources/img/cover.jpg)
 # MNDWRK Kafka Webinar
 
-## Introduction
+
 
 Welcome to the MNDWRK webinar demo repository! In this webinar, we'll explore the powerful Kafka ecosystem in conjunction with Spring Boot, showcasing how to build scalable, event-driven applications with ease.
 we'll demonstrate the integration of Kafka, a distributed streaming platform, with Spring Boot, a popular Java framework for building microservices. Through practical examples, we'll illustrate how Kafka facilitates real-time data processing and messaging within an application ecosystem.
