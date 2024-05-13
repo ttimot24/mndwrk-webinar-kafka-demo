@@ -31,11 +31,20 @@ bindings:
     kind: server
     options:
       host: 0.0.0.0
-      port: 8080
-    exit: mndwrk_http_server
+      port: 
+        - 8080
+        - 61616
+    routes:
+      - when:
+          - port: 8080
+        exit: mndwrk_http_server
+      - when:
+          - port: 61616
+        exit: mndwrk_mqtt_server
     telemetry:
       metrics:
         - http.*
+        - stream.*
   
   mndwrk_http_server:
     type: http
@@ -86,6 +95,39 @@ bindings:
           merge:
             content-type: application/json
 
+
+  mndwrk_mqtt_server:
+    type: mqtt
+    kind: server
+    telemetry:
+      metrics:
+        - stream.*
+    exit: mndwrk_mqtt_kafka_mapping
+
+  # MQTT messages to Kafka topics
+  mndwrk_mqtt_kafka_mapping:
+    type: mqtt-kafka
+    kind: proxy
+    options:
+      topics:
+        sessions: mqtt-sessions
+        messages: mqtt-messages
+        retained: mqtt-retained
+      clients:
+        - mqtt-zilla-response/{identity}/#
+    telemetry:
+      metrics:
+        - stream.*
+    routes:
+      - when:
+          - publish:
+              - topic: mndwrk-zilla-request
+          - subscribe:
+              - topic: mndwrk-zilla-response
+        with:
+          messages: mndwrk-zilla-response
+        exit: mndwrk_kafka_cache_client
+    exit: mndwrk_kafka_cache_client
 
   mndwrk_kafka_cache_client:
     type: kafka
@@ -152,9 +194,6 @@ bindings:
     telemetry:
       metrics:
         - http.*
-    options:
-      host: ${{env.KAFKA_HOST}}
-      port: ${{env.KAFKA_PORT}}
     routes:
       - when:
           - cidr: 0.0.0.0/0

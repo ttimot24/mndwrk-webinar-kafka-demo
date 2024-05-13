@@ -13,6 +13,10 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
 
   broker:
     image: confluentinc/cp-kafka:7.2.2
@@ -37,6 +41,10 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
       KAFKA_LOG_RETENTION_HOURS: 0
       KAFKA_LOG_RETENTION_MINUTES: 10
+    deploy:
+      resources:
+        limits:
+          memory: 4G
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.2.2
@@ -49,6 +57,47 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # Based on https://github.com/confluentinc/demo-scene/blob/master/kafka-connect-zero-to-hero/docker-compose.yml
+  # and https://github.com/confluentinc/demo-scene/blob/master/ksql-atm-fraud-detection/docker-compose.yml
+  connect:
+    image: debezium/connect:2.6.1.Final
+    restart: always
+    stop_grace_period: 1200s
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8083:8083"
+    environment:
+      KAFKA_HEAP_OPTS: "-XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=75.0"
+      BOOTSTRAP_SERVERS: "broker:29092"
+      REST_PORT: 8083
+      GROUP_ID: kafka-connect
+      CONFIG_STORAGE_TOPIC: _connect-configs
+      OFFSET_STORAGE_TOPIC: _connect-offsets
+      STATUS_STORAGE_TOPIC: _connect-status
+      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      REST_ADVERTISED_HOST_NAME: "connect"
+      LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
+      CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      STATUS_STORAGE_REPLICATION_FACTOR: "1"
+      TOPIC_CREATION_ENABLE: "true"
+      SR_REST_ADVERTISED_HOST_NAME: "schema-registry"
+      SR_REST_PORT: 8081
+      PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars
+    deploy:
+      resources:
+        limits:
+          memory: 3G
 
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:latest
@@ -66,6 +115,10 @@ services:
       CONNECT_ENABLED: "true"
       CONNECT_CLUSTERS_NAME: connect-cluster
       CONNECT_CLUSTERS_URL: "http://connect:8083"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
 
   ksqldb-server:
     image: confluentinc/cp-ksqldb-server:7.2.2
@@ -74,6 +127,7 @@ services:
     depends_on:
       - broker
       - schema-registry
+      - connect
     ports:
       - "8088:8088"
     environment:
@@ -82,14 +136,16 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      # KSQL_KSQL_CONNECT_URL: ''
+      KSQL_KSQL_CONNECT_URL: 'http://connect:8083'
+    deploy:
+      resources:
+        limits:
+          memory: 2G
 
   ksqldb-cli:
     image: confluentinc/cp-ksqldb-cli:7.2.2
     container_name: ksqldb-cli
     depends_on:
-      - broker
-      - schema-registry
       - ksqldb-server
     entrypoint: /bin/sh
     tty: true
@@ -103,6 +159,7 @@ services:
        - schema-registry 
      ports:
        - "8080:8080"
+       - "61616:61616"
        - "7114:7114"
        - "7190:7190"
      environment:
@@ -114,6 +171,10 @@ services:
        API_URL: "http://localhost:8080"
      volumes:
        - ./zilla.yml:/etc/zilla/zilla.yaml
+     deploy:
+      resources:
+        limits:
+          memory: 1.5G
 
 volumes:
   zookeeper-data:
