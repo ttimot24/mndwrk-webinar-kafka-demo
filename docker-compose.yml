@@ -154,6 +154,7 @@ services:
      image: ghcr.io/aklivity/zilla:0.9.79
      container_name: zilla
      command:  ["start", "-v", "-e"]
+     restart: always
      depends_on:
        - broker
        - schema-registry 
