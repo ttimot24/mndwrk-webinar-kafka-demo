@@ -111,7 +111,7 @@ bindings:
     options:
       topics:
         sessions: mqtt-sessions
-        messages: mqtt-messages
+        messages: mndwrk-zilla-response
         retained: mqtt-retained
       clients:
         - mqtt-zilla-response/{identity}/#
