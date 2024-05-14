@@ -1,0 +1,32 @@
+{
+    "type": "record",
+    "name": "KsqlDataSourceSchema",
+    "namespace": "io.confluent.ksql.avro_schemas",
+    "fields": [
+        {
+            "name": "source",
+            "type": [
+                "null",
+                "string"
+            ],
+            "default": null
+        },
+        {
+            "name": "description",
+            "type": [
+                "null",
+                "string"
+            ],
+            "default": null
+        },
+        {
+            "name": "detectedAt",
+            "type": [
+                "null",
+                "string"
+            ],
+            "default": null
+        }
+    ],
+    "connect.name": "io.confluent.ksql.avro_schemas.KsqlDataSourceSchema"
+}
