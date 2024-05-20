@@ -112,23 +112,27 @@ bindings:
     options:
       topics:
         sessions: mqtt-sessions
-        messages: mndwrk-zilla-response
+        messages: mqtt-messages
         retained: mqtt-retained
       clients:
-        - mqtt-zilla-response/{identity}/#
-    telemetry:
-      metrics:
-        - stream.*
+        - mndwrk-zilla-request/{identity}
     routes:
       - when:
           - publish:
-              - topic: mndwrk-zilla-request/#
+              - topic: mndwrk-zilla-request
+        exit: mndwrk_kafka_cache_client
+        with:
+            messages: mndwrk-zilla-request
+      - when:
           - subscribe:
-              - topic: mndwrk-zilla-response/#
+              - topic: mndwrk-zilla-response/+
+        exit: mndwrk_kafka_cache_client
         with:
           messages: mndwrk-zilla-response
-        exit: mndwrk_kafka_cache_client
     exit: mndwrk_kafka_cache_client
+    telemetry:
+      metrics:
+        - stream.*
 
   mndwrk_kafka_cache_client:
     type: kafka
@@ -158,9 +162,13 @@ bindings:
     telemetry:
       metrics:
         - http.*
+        - stream.*
     options:
-      #bootstrap:
-       # - mndwrk-zilla-response
+      bootstrap:
+        - mqtt-sessions
+        - mqtt-messages
+        - mqtt-retained
+        - mndwrk-zilla-response
       topics:
         - name: mndwrk-zilla-request
           value:
@@ -185,6 +193,7 @@ bindings:
     telemetry:
       metrics:
         - http.*
+        - stream.*
     options:
       servers:
         - ${{env.KAFKA_BOOTSTRAP_SERVER}}
@@ -195,6 +204,7 @@ bindings:
     telemetry:
       metrics:
         - http.*
+        - stream.*
     routes:
       - when:
           - cidr: 0.0.0.0/0

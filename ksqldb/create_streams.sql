@@ -14,12 +14,13 @@ WITH (
     VALUE_FORMAT = 'AVRO'
 ) AS
 SELECT
-    'mndwrk-zilla-response/'+ uuid,
+    'mndwrk-zilla-response/'+ IFNULL(REPLACE(uuid,'mndwrk-zilla-request', NULL), UUID()),
     UUID as `uuid`,
     SOURCE as `source`,
     DESCRIPTION as `description`,
-    TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt`
+    TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt`,
+    'ksqldb' as `processedBy`
 FROM
     MNDWRK_ZILLA_REQUEST
-PARTITION BY 'mndwrk-zilla-response/'+ uuid
+PARTITION BY 'mndwrk-zilla-response/'+ IFNULL(REPLACE(uuid,'mndwrk-zilla-request', NULL), UUID())
 EMIT CHANGES;

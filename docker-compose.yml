@@ -135,6 +135,8 @@ services:
     restart: always
     depends_on:
       - broker
+      # - schema-registry
+      # - connect
     ports:
       - "9000:8080"
     environment:
@@ -177,6 +179,26 @@ services:
       resources:
         limits:
           memory: 1.5G
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 9001:8080
+    depends_on:
+      - broker
+      - schema-registry 
+      # - connect
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9997
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: first
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://connect:8083
+      KAFKA_CLUSTERS_0_KSQL_0_NAME: first
+      KAFKA_CLUSTERS_0_KSQL_0_ADDRESS: http://ksqldb-server:8088
+      DYNAMIC_CONFIG_ENABLED: 'true'  
 
 volumes:
   zookeeper-data:

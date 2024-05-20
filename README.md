@@ -80,7 +80,10 @@ CREATE OR REPLACE STREAM MNDWRK_ZILLA_RESPONSE WITH (KAFKA_TOPIC='mndwrk-zilla-r
 
 #### Connection via MQTT
 ```sh
-mqtt sub -h localhost -p 61616 -v -t mndwrk-zilla-response
+mqtt pub -d -h localhost -p 61616 -v -t mndwrk-zilla-request -m:file ./payload.mqtt
+```
+```sh
+mqtt sub -d -v -J -h localhost -p 61616 -i webinar-client -t mndwrk-zilla-response
 ```
 
 #### Other
