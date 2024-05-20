@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @JsonSubTypes({@JsonSubTypes.Type(value = ConsumedEvent.class), @JsonSubTypes.Type(value = ProducedEvent.class),})
@@ -40,7 +38,7 @@ public abstract class Event {
     }
 
     public void setSummary(String description) {
-        this.summary = summary;
+        this.summary = description;
     }
 
     public long getDetectedAt() {

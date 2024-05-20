@@ -13,14 +13,13 @@ WITH (
     PARTITIONS = 1,
     VALUE_FORMAT = 'AVRO'
 ) AS
-SELECT * FROM (
 SELECT
+    'mndwrk-zilla-response/'+ uuid,
     UUID as `uuid`,
     SOURCE as `source`,
     DESCRIPTION as `description`,
-    TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt`,
-    'mndwrk-zilla-response/'+UUID as `mq-topic`
+    TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt`
 FROM
-    MNDWRK_ZILLA_REQUEST) 
-PARTITION BY `mq-topic`
+    MNDWRK_ZILLA_REQUEST
+PARTITION BY 'mndwrk-zilla-response/'+ uuid
 EMIT CHANGES;

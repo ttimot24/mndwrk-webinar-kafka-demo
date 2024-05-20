@@ -2,21 +2,11 @@ package com.mndwrk.webinar.demo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mndwrk.webinar.demo.config.KafkaConfig;
 import com.mndwrk.webinar.demo.entity.ConsumedEvent;
 import com.mndwrk.webinar.demo.entity.ProducedEvent;
-import com.mndwrk.webinar.demo.kafka.KafkaStreamsCustomizer;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.kafka.support.serializer.JsonSerde;
 
 public class StreamsTesting {
 

@@ -74,14 +74,14 @@ bindings:
           capability: produce
           topic: mndwrk-zilla-request
           key: ${idempotencyKey}
-        #  reply-to: mndwrk-zilla-response
+          reply-to: mndwrk-zilla-response
       - when:
           - method: GET
             path: /api/v1/sensor-data
         exit: mndwrk_kafka_cache_client
         with:
           capability: fetch
-          topic: mndwrk-zilla-request
+          topic: mndwrk-zilla-response
           merge:
             content-type: application/json
       - when:
@@ -90,7 +90,7 @@ bindings:
         exit: mndwrk_kafka_cache_client
         with:
           capability: fetch
-          topic: mndwrk-zilla-request
+          topic: mndwrk-zilla-response
           filters:
             - key: ${params.id}
           merge:
