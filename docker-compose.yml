@@ -65,7 +65,7 @@ services:
   # Based on https://github.com/confluentinc/demo-scene/blob/master/kafka-connect-zero-to-hero/docker-compose.yml
   # and https://github.com/confluentinc/demo-scene/blob/master/ksql-atm-fraud-detection/docker-compose.yml
   connect:
-    image: debezium/connect:2.6.1.Final
+    image: confluentinc/cp-kafka-connect:7.2.2
     restart: always
     stop_grace_period: 1200s
     depends_on:
@@ -75,50 +75,30 @@ services:
       - "8083:8083"
     environment:
       KAFKA_HEAP_OPTS: "-XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=75.0"
-      BOOTSTRAP_SERVERS: "broker:29092"
-      REST_PORT: 8083
-      GROUP_ID: kafka-connect
-      CONFIG_STORAGE_TOPIC: _connect-configs
-      OFFSET_STORAGE_TOPIC: _connect-offsets
-      STATUS_STORAGE_TOPIC: _connect-status
-      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-      REST_ADVERTISED_HOST_NAME: "connect"
-      LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
-      CONFIG_STORAGE_REPLICATION_FACTOR: "1"
-      OFFSET_STORAGE_REPLICATION_FACTOR: "1"
-      STATUS_STORAGE_REPLICATION_FACTOR: "1"
-      TOPIC_CREATION_ENABLE: "true"
+      CONNECT_BOOTSTRAP_SERVERS: "broker:29092"
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_TOPIC_CREATION_ENABLE: "true"
       SR_REST_ADVERTISED_HOST_NAME: "schema-registry"
       SR_REST_PORT: 8081
-      PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars
+      #  ---------------
+      CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars
     deploy:
       resources:
         limits:
           memory: 3G
-
-  redpanda-console:
-    image: docker.redpanda.com/vectorized/console:latest
-    restart: always
-    depends_on:
-      - broker
-    ports:
-      - "9000:8080"
-    environment:
-      SERVER_BASEPATH: /redpanda
-      #METRICSNAMESPACE: redpanda-console
-      KAFKA_BROKERS: ${KAFKA_BROKERS:-broker:29092}
-      KAFKA_SCHEMAREGISTRY_ENABLED: "true"
-      KAFKA_SCHEMAREGISTRY_URLS: "http://schema-registry:8081"
-      CONNECT_ENABLED: "true"
-      CONNECT_CLUSTERS_NAME: connect-cluster
-      CONNECT_CLUSTERS_URL: "http://connect:8083"
-    deploy:
-      resources:
-        limits:
-          memory: 1G
 
   ksqldb-server:
     image: confluentinc/cp-ksqldb-server:7.2.2
@@ -150,8 +130,29 @@ services:
     entrypoint: /bin/sh
     tty: true
 
+  redpanda-console:
+    image: docker.redpanda.com/vectorized/console:latest
+    restart: always
+    depends_on:
+      - broker
+    ports:
+      - "9000:8080"
+    environment:
+      SERVER_BASEPATH: /redpanda
+      #METRICSNAMESPACE: redpanda-console
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-broker:29092}
+      KAFKA_SCHEMAREGISTRY_ENABLED: "true"
+      KAFKA_SCHEMAREGISTRY_URLS: "http://schema-registry:8081"
+      CONNECT_ENABLED: "true"
+      CONNECT_CLUSTERS_NAME: connect-cluster
+      CONNECT_CLUSTERS_URL: "http://connect:8083"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
   zilla:
-     image: ghcr.io/aklivity/zilla:0.9.79
+     image: ghcr.io/aklivity/zilla:0.9.80
      container_name: zilla
      command:  ["start", "-v", "-e"]
      restart: always

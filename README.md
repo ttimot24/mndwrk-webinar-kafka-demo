@@ -78,6 +78,11 @@ SELECT `uuid`, `source`, `description`, TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd H
 CREATE OR REPLACE STREAM MNDWRK_ZILLA_RESPONSE WITH (KAFKA_TOPIC='mndwrk-zilla-response', KEY_FORMAT='KAFKA', PARTITIONS=1, VALUE_FORMAT='AVRO') AS SELECT UUID as `uuid`, SOURCE as `source`, DESCRIPTION as `description`, TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt` FROM MNDWRK_ZILLA_REQUEST EMIT CHANGES;
 ```
 
+#### Connection via MQTT
+```sh
+mqtt sub -h localhost -p 61616 -v -t mndwrk-zilla-response
+```
+
 #### Other
 
 ```sql
