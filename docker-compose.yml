@@ -124,6 +124,21 @@ services:
         limits:
           memory: 2G
 
+  kafka-init:
+    image: bitnami/kafka:3.5
+    command:
+      - "/bin/bash"
+      - "-c"
+      - |
+        /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --create --if-not-exists --topic mqtt-sessions --config cleanup.policy=compact
+        /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --create --if-not-exists --topic mqtt-retained --config cleanup.policy=compact
+        /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --create --if-not-exists --topic mqtt-messages
+        /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --create --if-not-exists --topic mndwrk-zilla-request
+        /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --create --if-not-exists --topic mndwrk-zilla-response
+    depends_on:
+      - broker
+    init: true
+
   ksqldb-cli:
     image: confluentinc/cp-ksqldb-cli:7.2.2
     container_name: ksqldb-cli
