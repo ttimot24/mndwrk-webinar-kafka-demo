@@ -182,6 +182,8 @@ services:
         limits:
           memory: 1.5G
 
+  ####################
+
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
@@ -201,12 +203,23 @@ services:
       KAFKA_CLUSTERS_0_KSQL_0_NAME: first
       KAFKA_CLUSTERS_0_KSQL_0_ADDRESS: http://ksqldb-server:8088
       DYNAMIC_CONFIG_ENABLED: 'true'  
+  
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
 
 volumes:
   zookeeper-data:
   zookeeper-log:
   broker-data:
   connect-data:
+  mongodb-data:
 
 
 networks:
