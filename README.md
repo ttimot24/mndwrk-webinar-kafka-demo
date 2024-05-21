@@ -23,7 +23,7 @@ we'll demonstrate the integration of Kafka, a distributed streaming platform, wi
 ```sh
 docker-compose up -d
 
-docker exec -it  webinar-kafka-demo_broker_1 /bin/bash
+docker exec -it  mndwrk-webinar-kafka-demo-broker-1 /bin/bash
 
 kafka-console-producer --topic webinar-demo-inbound --bootstrap-server localhost:9092
 ```
@@ -60,6 +60,15 @@ confluent-hub install --no-prompt /data/connect-jars/mongodb-kafka-connect-mongo
 #### Register Schema
 ```sh
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+avro" -d@schemas/avro/zilla-request.avsc http://localhost:8081/subjects/mndwrk-zilla-request-value/versions | jq
+
+jq '. | {schema: tojson}' schemas/avro/zilla-request.avsc  | \
+    curl -X POST http://localhost:8081/subjects/mndwrk-zilla-request-value/versions \
+         -H "Content-Type:application/json" \
+         -d @-
+jq '. | {schema: tojson}' schemas/avro/zilla-response.avsc  | \
+    curl -X POST http://localhost:8081/subjects/mndwrk-zilla-response-value/versions \
+         -H "Content-Type:application/json" \
+         -d @-
 ```
 
 #### ksqlDB
