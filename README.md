@@ -94,10 +94,10 @@ CREATE OR REPLACE STREAM MNDWRK_ZILLA_RESPONSE WITH (KAFKA_TOPIC='mndwrk-zilla-r
 
 #### Connection via MQTT
 ```sh
-mqtt pub -d -h localhost -p 61616 -v -t mndwrk-zilla-request -m:file ./payload.mqtt
+mqtt pub -d -h localhost -p 61616 -i webinar-client-pub -t /api/v1/sensor-data/$(uuidgen) -m:file ./payload.mqtt
 ```
 ```sh
-mqtt sub -d -v -J -h localhost -p 61616 -i webinar-client -t mndwrk-zilla-response
+mqtt sub -d -J -h localhost -p 61616 -i webinar-client-sub -t /api/v1/sensor-data/#
 ```
 
 #### Other

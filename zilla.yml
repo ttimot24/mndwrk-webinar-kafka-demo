@@ -115,17 +115,17 @@ bindings:
         messages: mqtt-messages
         retained: mqtt-retained
       clients:
-        - mndwrk-zilla-request/{identity}
+        - /api/v1/sensor-data/{identity}
     routes:
       - when:
           - publish:
-              - topic: mndwrk-zilla-request
+              - topic: /api/v1/sensor-data/+
         exit: mndwrk_kafka_cache_client
         with:
             messages: mndwrk-zilla-request
       - when:
           - subscribe:
-              - topic: mndwrk-zilla-response/+
+              - topic: /api/v1/sensor-data/+
         exit: mndwrk_kafka_cache_client
         with:
           messages: mndwrk-zilla-response
