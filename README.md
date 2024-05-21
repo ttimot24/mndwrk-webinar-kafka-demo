@@ -54,7 +54,7 @@ sudo docker-compose down -v && sudo docker-compose up -d
 
 #### Install MongoDB connector
 ```sh
-confluent-hub install --no-prompt ./mongodb-kafka-connect-mongodb-1.12.0.zip
+confluent-hub install --no-prompt /data/connect-jars/mongodb-kafka-connect-mongodb-1.12.0.zip
 ```
 
 #### Register Schema
