@@ -52,6 +52,11 @@ kafka-console-consumer --topic webinar-demo-outbound --bootstrap-server localhos
 sudo docker-compose down -v && sudo docker-compose up -d
 ```
 
+#### Install MongoDB connector
+```sh
+confluent-hub install --no-prompt ./mongodb-kafka-connect-mongodb-1.12.0.zip
+```
+
 #### Register Schema
 ```sh
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+avro" -d@schemas/avro/zilla-request.avsc http://localhost:8081/subjects/mndwrk-zilla-request-value/versions | jq

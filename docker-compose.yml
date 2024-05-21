@@ -95,6 +95,8 @@ services:
       SR_REST_PORT: 8081
       #  ---------------
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components,/data/connect-jars
+    volumes:
+       - ./connect:/data/connect-jars
     deploy:
       resources:
         limits:
