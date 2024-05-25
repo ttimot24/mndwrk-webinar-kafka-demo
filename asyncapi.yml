@@ -3,6 +3,24 @@ info:
   title: MNDWRK Sensor Service
   version: 1.0.0
   description: This service is in charge of processing sensor data
+servers:
+  localhost_mq: 
+    protocol: mqtt
+    description: MQ broker server
+    host: localhost:61616
+  localhost_amqp: 
+    protocol: amqp
+    description: AMQP broker server
+    host: localhost:61617
+  localhost_ws: 
+    protocol: ws
+    description: Web socket server
+    host: localhost:8081
+  localhost_http: 
+    protocol: http
+    description: HTTP web server
+    host: localhost:8080
+
 channels:
   mndwrkZillaRequest:
     address: mndwrk-zilla-request
