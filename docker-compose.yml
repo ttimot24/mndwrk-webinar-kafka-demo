@@ -172,7 +172,7 @@ services:
           memory: 1G
 
   zilla:
-     image: ghcr.io/aklivity/zilla:0.9.80
+     image: ghcr.io/aklivity/zilla:latest
      container_name: zilla
      command:  ["start", "-v", "-e"]
      restart: always
