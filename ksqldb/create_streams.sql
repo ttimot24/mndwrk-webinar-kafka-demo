@@ -27,6 +27,7 @@ OR REPLACE STREAM MNDWRK_ZILLA_REQUEST(UUID VARCHAR KEY) WITH (
     VALUE_FORMAT = 'AVRO'
 );
 
+
 CREATE
 OR REPLACE STREAM MNDWRK_ZILLA_RESPONSE WITH (
     KAFKA_TOPIC = 'mndwrk-zilla-response',
@@ -35,7 +36,7 @@ OR REPLACE STREAM MNDWRK_ZILLA_RESPONSE WITH (
     VALUE_FORMAT = 'AVRO'
 ) AS
 SELECT
-    'mndwrk-zilla-response/' + IFNULL(
+    '/api/v1/sensor-data/' + IFNULL(
         REPLACE(uuid, 'mndwrk-zilla-request', NULL),
         UUID()
     ),
@@ -45,7 +46,7 @@ SELECT
     TIMESTAMPTOSTRING(ROWTIME, 'yyyy-MM-dd HH:mm:ss.SSS') as `detectedAt`,
     'ksqldb' as `processedBy`
 FROM
-    MNDWRK_ZILLA_REQUEST PARTITION BY 'mndwrk-zilla-response/' + IFNULL(
+    MNDWRK_ZILLA_REQUEST PARTITION BY '/api/v1/sensor-data/' + IFNULL(
         REPLACE(uuid, 'mndwrk-zilla-request', NULL),
         UUID()
     ) EMIT CHANGES;

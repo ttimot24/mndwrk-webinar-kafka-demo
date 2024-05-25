@@ -1,0 +1,62 @@
+asyncapi: 3.0.0
+info:
+  title: MNDWRK Sensor Service
+  version: 1.0.0
+  description: This service is in charge of processing sensor data
+channels:
+  mndwrkZillaRequest:
+    address: mndwrk-zilla-request
+    messages:
+      ZillaRequest:
+        $ref: '#/components/messages/ZillaRequest'
+  mndwrkZillaResponse:
+    address: mndwrk-zilla-response
+    messages:
+      ZillaResponse:
+        $ref: '#/components/messages/ZillaResponse'
+operations:
+  receiveSensorData:
+    action: receive
+    channel:
+      $ref: '#/channels/mndwrkZillaRequest'
+    messages:
+      - $ref: '#/channels/mndwrkZillaRequest/messages/ZillaRequest'
+  sendSensorData:
+    action: send
+    channel:
+      $ref: '#/channels/mndwrkZillaResponse'
+    messages:
+      - $ref: '#/channels/mndwrkZillaResponse/messages/ZillaResponse'
+components:
+  messages:
+    ZillaRequest:
+      payload:
+        type: object
+        properties:
+          source:
+            type: string
+            description: Source of the data
+          description:
+            type: string
+            description: Description of the data
+    ZillaResponse:
+      payload:
+        type: object
+        properties:
+          uuid: 
+            type: string
+            format: uuid
+            description: Unique identifier of the message
+          source:
+            type: string
+            description: Source of the data
+          description:
+            type: string
+            description: Description of the data
+          detectedAt:
+            type: string
+            format: date-time
+            description: Detection time 
+          processedBy:
+            type: string
+            description: Processing service name
