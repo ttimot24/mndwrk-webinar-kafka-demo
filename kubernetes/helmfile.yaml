@@ -10,7 +10,7 @@ releases:
 - name: zilla
   namespace: default
   chart: oci://ghcr.io/aklivity/charts/zilla
-  version: 0.9.81
+  version: ^0.9.0
   set:
     # single value loaded from a local file, translates to --set-file foo.config=path/to/file
     - name: "zilla\\.yaml"

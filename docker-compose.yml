@@ -21,8 +21,8 @@ services:
   broker:
     image: confluentinc/cp-kafka:7.3.3
     restart: always
-    depends_on:
-      - zookeeper
+    #depends_on:
+    #  - zookeeper
     ports:
       - "9092:9092"
       - "9101:9101"
@@ -32,7 +32,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181' 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -198,6 +198,18 @@ services:
         limits:
           memory: 1G
   
+  flink:
+    image: flink:latest
+    ports:
+      - "8078:8081"
+    command: jobmanager
+    volumes:
+      - ./flink/config.yaml:/config.yaml
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+  
   mongo:
     image: mongo
     container_name: mongo
@@ -212,35 +224,35 @@ services:
         limits:
           memory: 1G
 
-  postgresql:
-    image: postgres:14
-    hostname: postgresql
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: "conduktor-console"
-      POSTGRES_USER: "conduktor"
-      POSTGRES_PASSWORD: "some_password"
-      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+  #postgresql:
+  #  image: postgres:14
+  #  hostname: postgresql
+  #  volumes:
+  #    - pg_data:/var/lib/postgresql/data
+  #  environment:
+  #    POSTGRES_DB: "conduktor-console"
+  #    POSTGRES_USER: "conduktor"
+  #    POSTGRES_PASSWORD: "some_password"
+  #    POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
 
-  conduktor-console:
-    image: conduktor/conduktor-console:1.23.0
-    depends_on:
-      - broker
-    ports:
-      - "9001:8080"
-    volumes:
-      - conduktor_data:/var/conduktor
-    environment:
-      CDK_DATABASE_URL: "postgresql://conduktor:some_password@postgresql:5432/conduktor-console"
-      CDK_CLUSTERS_0_ID: "default"
-      CDK_CLUSTERS_0_NAME: "My Local Kafka Cluster"
-      CDK_CLUSTERS_0_COLOR: "#0013E7"
-      CDK_CLUSTERS_0_BOOTSTRAPSERVERS: "PLAINTEXT://broker:29092"
-      CDK_CLUSTERS_0_SCHEMAREGISTRY_URL: "http://schema-registry:8081"
-      CDK_CLUSTERS_0_KAFKACONNECTS_0_URL: "http://connect:8083"
-      CDK_CLUSTERS_0_KAFKACONNECTS_0_NAME: "full stack kafka connect"
-      CDK_CLUSTERS_0_KSQLDB_0_URL: "http://ksqldb-server:8088"
+  #conduktor-console:
+  #  image: conduktor/conduktor-console:1.23.0
+  #  depends_on:
+  #    - broker
+  #  ports:
+  #    - "9001:8080"
+  #  volumes:
+  #    - conduktor_data:/var/conduktor
+  #  environment:
+  #    CDK_DATABASE_URL: "postgresql://conduktor:some_password@postgresql:5432/conduktor-console"
+  #    CDK_CLUSTERS_0_ID: "default"
+  #    CDK_CLUSTERS_0_NAME: "My Local Kafka Cluster"
+  #    CDK_CLUSTERS_0_COLOR: "#0013E7"
+  #    CDK_CLUSTERS_0_BOOTSTRAPSERVERS: "PLAINTEXT://broker:29092"
+  #    CDK_CLUSTERS_0_SCHEMAREGISTRY_URL: "http://schema-registry:8081"
+  #    CDK_CLUSTERS_0_KAFKACONNECTS_0_URL: "http://connect:8083"
+  #    CDK_CLUSTERS_0_KAFKACONNECTS_0_NAME: "full stack kafka connect"
+  #    CDK_CLUSTERS_0_KSQLDB_0_URL: "http://ksqldb-server:8088"
 
 volumes:
   zookeeper-data:

@@ -1,0 +1,12 @@
+apiVersion: mongodb.com/v1
+kind: MongoDB
+metadata:
+  name: mongo-db
+spec:
+  version: "4.2.2-ent"
+  opsManager:
+    configMapRef:
+      name: <configMap.metadata.name>
+  credentials: <mycredentials>
+  type: Standalone
+  persistent: true
