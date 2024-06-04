@@ -108,6 +108,12 @@ DROP TABLE IF EXISTS <table_name> DELETE TOPIC;
 EXPLAIN | DESCRIBE;
 ```
 
+#### Apache Flink
+
+```sh
+docker-compose exec -it flink ./bin/sql-client.sh
+```
+
 ##
 
 Project by Timot Tarjani [(@ttimot24)](https://github.com/ttimot24)

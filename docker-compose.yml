@@ -205,24 +205,28 @@ services:
     command: jobmanager
     volumes:
       - ./flink/config.yaml:/config.yaml
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-  
-  mongo:
-    image: mongo
-    container_name: mongo
-    restart: always
-    ports:
-      - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager  
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 4G        
+  
+ # mongo:
+ #   image: mongo
+ #   container_name: mongo
+ #   restart: always
+ #   ports:
+ #     - 27017:27017
+ #   environment:
+ #     MONGO_INITDB_ROOT_USERNAME: root
+ #     MONGO_INITDB_ROOT_PASSWORD: root
+ #   deploy:
+ #     resources:
+ #       limits:
+ #         memory: 1G
 
   #postgresql:
   #  image: postgres:14
