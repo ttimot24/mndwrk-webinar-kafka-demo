@@ -73,11 +73,19 @@ global:
 
 # A list of scrape configurations.
 scrape_configs:
+  - job_name: prometheus
+    metrics_path: /metrics
+    static_configs:
+      - targets: [localhost:9090]
+
   - job_name: 'zilla'
-    scrape_interval: 15s
     metrics_path: '/metrics'
     static_configs:
       - targets: ['zilla:7190']
+
+  - job_name: 'flink'
+    static_configs:
+    - targets: ['flink:9999']
 
 
 # Alerting specifies settings related to the Alertmanager.
