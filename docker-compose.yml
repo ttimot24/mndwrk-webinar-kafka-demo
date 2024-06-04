@@ -239,24 +239,17 @@ services:
   #    POSTGRES_PASSWORD: "some_password"
   #    POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
 
-  #conduktor-console:
-  #  image: conduktor/conduktor-console:1.23.0
-  #  depends_on:
-  #    - broker
-  #  ports:
-  #    - "9001:8080"
-  #  volumes:
-  #    - conduktor_data:/var/conduktor
-  #  environment:
-  #    CDK_DATABASE_URL: "postgresql://conduktor:some_password@postgresql:5432/conduktor-console"
-  #    CDK_CLUSTERS_0_ID: "default"
-  #    CDK_CLUSTERS_0_NAME: "My Local Kafka Cluster"
-  #    CDK_CLUSTERS_0_COLOR: "#0013E7"
-  #    CDK_CLUSTERS_0_BOOTSTRAPSERVERS: "PLAINTEXT://broker:29092"
-  #    CDK_CLUSTERS_0_SCHEMAREGISTRY_URL: "http://schema-registry:8081"
-  #    CDK_CLUSTERS_0_KAFKACONNECTS_0_URL: "http://connect:8083"
-  #    CDK_CLUSTERS_0_KAFKACONNECTS_0_NAME: "full stack kafka connect"
-  #    CDK_CLUSTERS_0_KSQLDB_0_URL: "http://ksqldb-server:8088"
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
 volumes:
   zookeeper-data:
