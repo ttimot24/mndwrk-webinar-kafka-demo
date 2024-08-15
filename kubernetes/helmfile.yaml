@@ -3,22 +3,62 @@ helmDefaults:
   createNamespace: true
 
 repositories:
+- name: bitnami
+  url: https://charts.bitnami.com/bitnami
+- name: redpanda
+  url: https://charts.redpanda.com
 - name: prometheus-community
   url: https://prometheus-community.github.io/helm-charts
+- name: druid
+  url: https://asdf2014.github.io/druid-helm/
 
 releases:
+- name: kafka
+  namespace: mndwrk-demo
+  chart: bitnami/kafka
+  version: 30.0.3
+
+- name: schema-registry
+  namespace: mndwrk-demo
+  chart: bitnami/schema-registry
+  version: 21.0.0
+
+- name: redpanda-console
+  namespace: mndwrk-demo
+  chart: redpanda/console
+  version: 0.7.25
+  values:
+    - redpanda:
+        brokers:
+          - "kafka:29092"
+
 - name: zilla
-  namespace: default
+  namespace: mndwrk-demo
   chart: oci://ghcr.io/aklivity/charts/zilla
   version: ^0.9.0
   set:
     # single value loaded from a local file, translates to --set-file foo.config=path/to/file
     - name: "zilla\\.yaml"
-      file: ../zilla.yml
+      file: ./zilla.yml
+
+- name: keycloak
+  namespace: mndwrk-demo
+  chart: bitnami/keycloak
+  version: 21.0.0
 
 - name: prometheus
-  namespace: default
+  namespace: mndwrk-demo
   chart: prometheus-community/prometheus
   set:
   - name: rbac.create
     value: false
+    
+- name: druid
+  namespace: mndwrk-demo
+  chart: druid/druid
+  version: 30.0.5
+
+- name: spring-dataflow
+  namespace: mndwrk-demo
+  chart: bitnami/spring-cloud-dataflow
+  version: 31.0.0
