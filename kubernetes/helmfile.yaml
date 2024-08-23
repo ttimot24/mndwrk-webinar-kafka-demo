@@ -7,6 +7,8 @@ repositories:
   url: https://charts.bitnami.com/bitnami
 - name: redpanda
   url: https://charts.redpanda.com
+- name: kong
+  url: https://charts.konghq.com
 - name: prometheus-community
   url: https://prometheus-community.github.io/helm-charts
 - name: druid
@@ -22,36 +24,96 @@ releases:
   namespace: mndwrk-demo
   chart: bitnami/schema-registry
   version: 21.0.0
+  set:
+    - name: image.debug
+      value: true
+    - name: kafka.enabled
+      value: false 
+    - name: externalKafka.brokers
+      values: 
+        - SASL_PLAINTEXT://kafka:9092
+    - name: externalKafka.listener.protocol
+      value: SASL_PLAINTEXT
+    - name: kafka.sasl.client.users
+      values:
+        - user1
+    - name: kafka.sasl.client.passwords
+      values:
+        - kafka-user-passwords.secret
+    - name: externalKafka.sasl.user
+      value: user1
+   # - name: externalKafka.sasl.password
+   #   value: kafka-user-passwords.secret
+    - name: externalKafka.sasl.existingSecret
+      value: kafka-user-passwords
 
 - name: redpanda-console
   namespace: mndwrk-demo
   chart: redpanda/console
-  version: 0.7.25
-  values:
-    - redpanda:
-        brokers:
-          - "kafka:29092"
+  version: 0.7.26
+  set:
+    - name: ingress.enabled
+      value: true
+   # - name: ingress.hosts.host
+    #  value: architect.trendency.dev
+          #paths:
+           # - path: /redpanda-console
+            #  pathType: ImplementationSpecific
+    - name: console.config.kafka.brokers
+      values: 
+        - kafka:9092
+    - name: console.config.kafka.schemaRegistry.enabled
+      value: true
+    - name: console.config.kafka.schemaRegistry.urls
+      values: 
+        - http://schema-registry:8081
+    - name: console.config.kafka.clientId
+      value: redpanda-console    
+    - name: console.config.kafka.sasl.enabled
+      value: true
+    - name: console.config.kafka.sasl.username
+      value: user1  
+    - name: secret.kafka.saslPassword
+      value:  kafka-user-passwords-secret
+    - name: console.config.kafka.sasl.mechanism
+      value: SCRAM-SHA-256
+    - name: logger.level
+      value: DEBUG
+
+
 
 - name: zilla
   namespace: mndwrk-demo
   chart: oci://ghcr.io/aklivity/charts/zilla
   version: ^0.9.0
   set:
-    # single value loaded from a local file, translates to --set-file foo.config=path/to/file
     - name: "zilla\\.yaml"
       file: ./zilla.yml
+    - name: service.type
+      value: LoadBalancer
+
+#- name: kong
+#  namespace: mndwrk-demo
+#  chart: kong/kong
+#  version: 2.40.0
+#  set: 
+#    - name: admin.enabled
+#      value: true 
+#    - name: admin.http.enabled
+#      value: true
+
 
 - name: keycloak
   namespace: mndwrk-demo
   chart: bitnami/keycloak
   version: 21.0.0
 
-- name: prometheus
-  namespace: mndwrk-demo
-  chart: prometheus-community/prometheus
-  set:
-  - name: rbac.create
-    value: false
+#- name: prometheus
+#  namespace: mndwrk-demo
+#  chart: prometheus-community/prometheus
+#  set:
+#  - name: rbac.create
+#    value: false
     
 - name: druid
   namespace: mndwrk-demo
@@ -62,3 +124,8 @@ releases:
   namespace: mndwrk-demo
   chart: bitnami/spring-cloud-dataflow
   version: 31.0.0
+  set:
+    - name: rabbitmq.enabled
+      value: false
+    - name: skipper.enabled
+      value: false
