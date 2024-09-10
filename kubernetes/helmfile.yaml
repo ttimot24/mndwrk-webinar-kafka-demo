@@ -7,6 +7,8 @@ repositories:
   url: https://charts.bitnami.com/bitnami
 - name: redpanda
   url: https://charts.redpanda.com
+- name: licenseware
+  url: https://licenseware.github.io/charts/
 - name: kong
   url: https://charts.konghq.com
 - name: prometheus-community
@@ -15,6 +17,7 @@ repositories:
   url: https://asdf2014.github.io/druid-helm/
 
 releases:
+
 - name: kafka
   namespace: mndwrk-demo
   chart: bitnami/kafka
@@ -42,10 +45,59 @@ releases:
         - kafka-user-passwords.secret
     - name: externalKafka.sasl.user
       value: user1
-   # - name: externalKafka.sasl.password
-   #   value: kafka-user-passwords.secret
     - name: externalKafka.sasl.existingSecret
       value: kafka-user-passwords
+ 
+- name: kafka-connect
+  namespace: mndwrk-demo
+  chart: licenseware/kafka-connect
+  version: 0.2.1
+  set:
+     - name: image.repository
+       value: registry.trendency.hu/architecture/kafka-connect
+     - name: image.tag
+       value: main
+     - name: image.imagePullSecrets
+       values:
+         - registry-credentials
+     - name: kafka.create
+       value: false
+     - name: schema-registry.create
+       value: false
+     - name: configMapPairs.CONNECT_BOOTSTRAP_SERVERS
+       value: kafka:9092
+     - name: configMapPairs.CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+       value: http://schema-registry:8081
+     - name: configMapPairs.CONNECT_SECURITY_PROTOCOL
+       value: SASL_PLAINTEXT
+     - name: configMapPairs.CONNECT_SASL_MECHANISM
+       value: SCRAM-SHA-256
+     - name: configMapPairs.CONNECT_SASL_JAAS_CONFIG
+       value: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+                username=\"user1\" \
+                password=\"kafka-user-passwords.secret\";"
+
+- name: ksqldb
+  namespace: mndwrk-demo
+  chart: licenseware/ksqldb
+  version: 0.4.1
+  set:
+    - name: kafka.create
+      value: false
+    - name: configMapPairs.KSQL_BOOTSTRAP_SERVERS
+      value: SASL_PLAINTEXT://kafka:9092
+    - name: configMapPairs.KSQL_KSQL_SCHEMA_REGISTRY_URL
+      value: http://schema-registry:8081
+    - name: configMapPairs.KSQL_KSQL_CONNECT_URL
+      value: http://connect:8083
+    - name: configMapPairs.KSQL_SECURITY_PROTOCOL
+      value: SASL_PLAINTEXT
+    - name: configMapPairs.KSQL_SASL_MECHANISM
+      value: SCRAM-SHA-256
+    - name: configMapPairs.KSQL_SASL_JAAS_CONFIG
+      value: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+                username=\"user1\" \
+                password=\"kafka-user-passwords.secret\";"
 
 - name: redpanda-console
   namespace: mndwrk-demo
@@ -54,11 +106,12 @@ releases:
   set:
     - name: ingress.enabled
       value: true
-   # - name: ingress.hosts.host
-    #  value: architect.trendency.dev
-          #paths:
-           # - path: /redpanda-console
-            #  pathType: ImplementationSpecific
+    - name: ingress.hosts[0].host
+      value: architect.trendency.dev
+    - name: ingress.hosts[0].paths[0].path
+      value: /redpanda-console
+    - name: ingress.hosts[0].paths[0].path
+      value: ImplementationSpecific
     - name: console.config.kafka.brokers
       values: 
         - kafka:9092
@@ -67,6 +120,12 @@ releases:
     - name: console.config.kafka.schemaRegistry.urls
       values: 
         - http://schema-registry:8081
+    - name: console.config.connect.enabled
+      value: true
+    - name: console.config.connect.clusters[0].name
+      value: kafka-connect-cluster
+    - name: console.config.connect.clusters[0].url
+      value: http://connect:8083
     - name: console.config.kafka.clientId
       value: redpanda-console    
     - name: console.config.kafka.sasl.enabled
@@ -80,8 +139,6 @@ releases:
     - name: logger.level
       value: DEBUG
 
-
-
 - name: zilla
   namespace: mndwrk-demo
   chart: oci://ghcr.io/aklivity/charts/zilla
@@ -92,6 +149,43 @@ releases:
     - name: service.type
       value: LoadBalancer
 
+- name: keycloak
+  namespace: mndwrk-demo
+  chart: bitnami/keycloak
+  version: 21.0.0
+  set:
+    - name: image.registry
+      value: registry.trendency.hu
+    - name: image.repository
+      value: architecture/keycloak
+    - name: image.tag
+      value: main
+    - name: image.pullSecrets
+      values:
+        - registry-credentials
+##
+##- name: prometheus
+##  namespace: mndwrk-demo
+#  chart: prometheus-community/prometheus
+#  set:
+#  - name: rbac.create
+#    value: false
+    
+# - name: druid
+#   namespace: mndwrk-demo
+#   chart: druid/druid
+#   version: 30.0.5
+# 
+# - name: spring-dataflow
+#   namespace: mndwrk-demo
+#   chart: bitnami/spring-cloud-dataflow
+#   version: 31.0.0
+#   set:
+#     - name: rabbitmq.enabled
+#       value: false
+#     - name: skipper.enabled
+#       value: false
+#
 #- name: kong
 #  namespace: mndwrk-demo
 #  chart: kong/kong
@@ -101,31 +195,4 @@ releases:
 #      value: true 
 #    - name: admin.http.enabled
 #      value: true
-
-
-- name: keycloak
-  namespace: mndwrk-demo
-  chart: bitnami/keycloak
-  version: 21.0.0
-
-#- name: prometheus
-#  namespace: mndwrk-demo
-#  chart: prometheus-community/prometheus
-#  set:
-#  - name: rbac.create
-#    value: false
-    
-- name: druid
-  namespace: mndwrk-demo
-  chart: druid/druid
-  version: 30.0.5
-
-- name: spring-dataflow
-  namespace: mndwrk-demo
-  chart: bitnami/spring-cloud-dataflow
-  version: 31.0.0
-  set:
-    - name: rabbitmq.enabled
-      value: false
-    - name: skipper.enabled
-      value: false
+#
