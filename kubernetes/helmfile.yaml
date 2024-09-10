@@ -54,7 +54,7 @@ releases:
   version: 0.2.1
   set:
      - name: image.repository
-       value: registry.trendency.hu/architecture/kafka-connect
+       value: registry.gitlab.com/architecture/kafka-connect
      - name: image.tag
        value: main
      - name: image.imagePullSecrets
@@ -107,7 +107,7 @@ releases:
     - name: ingress.enabled
       value: true
     - name: ingress.hosts[0].host
-      value: architect.trendency.dev
+      value: architect.gitlab.dev
     - name: ingress.hosts[0].paths[0].path
       value: /redpanda-console
     - name: ingress.hosts[0].paths[0].path
@@ -155,7 +155,7 @@ releases:
   version: 21.0.0
   set:
     - name: image.registry
-      value: registry.trendency.hu
+      value: registry.gitlab.com
     - name: image.repository
       value: architecture/keycloak
     - name: image.tag

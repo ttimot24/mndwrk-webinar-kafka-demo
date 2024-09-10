@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  keycloak_web:
+    image: registry.gitlab.com/architecture/keycloak
+    build: .
+    container_name: keycloak_web
+    environment:
+      KEYCLOAK_DATABASE_VENDOR: postgres
+      KEYCLOAK_DATABASE_HOST: keycloakdb
+      KEYCLOAK_DATABASE_USER: keycloak
+      KEYCLOAK_DATABASE_PASSWORD: password
+
+      KAFKA_TOPIC: keycloak-events
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_CLIENT_ID: keycloak
+
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    #command: start-dev
+    depends_on:
+      - keycloakdb
+    ports:
+      - 8080:8080
+
+  keycloakdb:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+
+volumes:
+  postgres_data:
+
+networks:
+    default:
+        name: keycloak
