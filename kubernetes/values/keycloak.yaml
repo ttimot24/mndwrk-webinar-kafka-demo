@@ -1,0 +1,96 @@
+image:
+  repository: ttimot24/keycloak
+  tag: main
+  pullPolicy: Always
+  pullSecrets: 
+    - registry-credentials
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: sso.mndwrk.dev
+  annotations:
+    cert-manager.io/cluster-issuer: mndwrk
+  extraTls:
+    - hosts:
+      - '*.mndwrk.dev'
+      secretName: mndwrk-tls
+
+adminIngress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: keycloak.mndwrk.dev
+  annotations:
+    cert-manager.io/cluster-issuer: mndwrk
+  extraTls:
+    - hosts:
+      - '*.mndwrk.dev'
+      secretName: mndwrk-tls
+
+httpRelativePath: /auth/
+proxy: edge
+proxyHeaders: xforwarded
+
+keycloakConfigCli:
+  enabled: true
+  configuration:
+    master.json: |
+      {
+        "realm" : "master",
+        "attributes": {
+          "frontendUrl": "https://keycloak.mndwrk.dev/auth/"
+        },
+        "eventsEnabled": true,
+        "eventsListeners": [
+          "jboss-logging",
+          "kafka"
+        ],
+         "adminEventsEnabled": true,
+         "smtpServer": {
+          "password": "**********",
+          "replyToDisplayName": "",
+          "starttls": "false",
+          "auth": "true",
+          "port": "578",
+          "host": "email-smtp.eu-west-1.amazonaws.com",
+          "replyTo": "",
+          "from": "szerencseplusz@trendency.hu",
+          "fromDisplayName": "SzerencsePlusz",
+          "envelopeFrom": "",
+          "ssl": "true",
+          "user": "AKIAT57OKXOMMCKHEXFR"
+        }
+      }
+
+auth:
+  adminUser: admin
+  adminPassword: YTVR9vD06J
+postgresql:
+  auth:
+    postgresPassword: cQPS0MG6Xd
+    password: a5nKujadRD
+
+# https://hub.docker.com/r/bitnami/keycloak
+extraEnvVars:
+  - name: KAFKA_BOOTSTRAP_SERVERS
+    value: kafka:9092
+  - name: KAFKA_SCHEMA_REGISTRY_URL
+    value: http://schema-registry:8081
+  - name: KAFKA_VALUE_SERIALIZER_CLASS
+    value: io.confluent.kafka.serializers.KafkaAvroSerializer
+  - name: KAFKA_AUTO_REGISTER_SCHEMAS
+    value: 'true'
+  - name: KAFKA_TOPIC
+    value: keycloak-events 
+  - name: KAFKA_ADMIN_TOPIC
+    value: keycloak-admin-events 
+  - name: KAFKA_CLIENT_ID
+    value: keycloak
+  - name: KAFKA_SECURITY_PROTOCOL
+    value: "SASL_PLAINTEXT"
+  - name: KAFKA_SASL_MECHANISM 
+    value: "SCRAM-SHA-256"
+  - name: KAFKA_SASL_JAAS_CONFIG
+    value: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+                username=\"user1\" \
+                password=\"kafka-user-passwords.secret\";"

@@ -1,0 +1,6 @@
+
+
+configMapPairs:
+  KAFKA_BOOTSTRAP_SERVER: kafka:9092
+  SASL_USERNAME: user1
+  SASL_PASSWORD: kafka-user-passwords.secret

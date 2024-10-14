@@ -1,0 +1,36 @@
+sasl:
+  client: 
+    passwords: "kafka-user-passwords.secret"
+
+provisioning:
+  enabled: true
+  numPartitions: 1
+  replicationFactor: 3
+  topics:
+    - name: keycloak-events
+    - name: keycloak-admin-events
+    - name: core-push-notification
+
+externalAccess:
+  enabled: true
+  service:
+    type: LoadBalancer
+    port: 9094
+  autoDiscovery:
+    enabled: true
+  servicePerBroker: true
+  preferredAddresses: []
+  domain: "broker.mndwrk.dev"
+  useHostnames: true
+  
+controller:
+  forceExpose: true
+  automountServiceAccountToken: true
+broker: 
+  automountServiceAccountToken: true
+
+rbac:
+  create: true
+
+#service:
+#  type: Cluster

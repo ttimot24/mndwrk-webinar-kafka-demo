@@ -1,0 +1,34 @@
+image:
+  repository: "ttimot24/ksqldb"
+  tag: main
+  pullPolicy: Always
+imagePullSecrets:
+  - name: registry-credentials
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: mndwrk-issuer
+  hosts:
+    - host: ksqldb.mndwrk.dev
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: architect-tls
+      hosts:
+        - '*.mndwrk.dev'  
+
+kafka:
+  create: false
+
+configMapPairs:
+  KSQL_BOOTSTRAP_SERVERS: SASL_PLAINTEXT://kafka:9092
+  KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+  KSQL_KSQL_CONNECT_URL: http://connect:8083
+  KSQL_SECURITY_PROTOCOL: SASL_PLAINTEXT
+  KSQL_SASL_MECHANISM: SCRAM-SHA-256
+  KSQL_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+                username=\"user1\" \
+                password=\"kafka-user-passwords.secret\";"

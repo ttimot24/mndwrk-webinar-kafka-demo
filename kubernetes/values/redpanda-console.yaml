@@ -1,0 +1,40 @@
+ingress:
+  enabled: true
+  className: nginx
+#  annotations:
+#    cert-manager.io/cluster-issuer: mndwrk-issuer
+  hosts:
+    - host: redpanda-console.mndwrk.dev
+      paths:
+        - path: '/'
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+      - '*.mndwrk.dev'
+      secretName: mndwrk-tls
+
+console:
+  config:
+    kafka:
+      brokers:
+        - kafka:9092
+      schemaRegistry:
+        enabled: true
+        urls:
+          - http://schema-registry:8081
+      clientId: redpanda-console    
+      sasl:
+        enabled: true
+        username: user1
+        mechanism: SCRAM-SHA-256
+    connect:
+      enabled: true
+      clusters: 
+        - name: kafka-connect
+          url: http://kafka-connect:8083
+        
+secret:
+  kafka:
+    saslPassword: kafka-user-passwords.secret
+  login:
+    jwtSecret: w6H8ejqbjdPuqv7IFhLiY9bnP79wbpnA

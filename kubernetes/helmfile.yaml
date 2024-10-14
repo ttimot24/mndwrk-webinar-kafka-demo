@@ -3,18 +3,22 @@ helmDefaults:
   createNamespace: true
 
 repositories:
+- name: trendency 
+  url: https://gitlab.trendency.hu/api/v4/projects/2443/packages/helm/devel
+  username: timot.tarjani
+  password: QvxdaShykq9bH9LyUuHu
 - name: bitnami
   url: https://charts.bitnami.com/bitnami
 - name: redpanda
   url: https://charts.redpanda.com
 - name: licenseware
   url: https://licenseware.github.io/charts/
-- name: kong
-  url: https://charts.konghq.com
-- name: prometheus-community
-  url: https://prometheus-community.github.io/helm-charts
-- name: druid
-  url: https://asdf2014.github.io/druid-helm/
+#- name: kong
+#  url: https://charts.konghq.com
+#- name: prometheus-community
+#  url: https://prometheus-community.github.io/helm-charts
+#- name: druid
+#  url: https://asdf2014.github.io/druid-helm/
 
 releases:
 
@@ -22,122 +26,43 @@ releases:
   namespace: mndwrk-demo
   chart: bitnami/kafka
   version: 30.0.3
+  values: 
+    - values/kafka.yaml
 
 - name: schema-registry
   namespace: mndwrk-demo
   chart: bitnami/schema-registry
   version: 21.0.0
-  set:
-    - name: image.debug
-      value: true
-    - name: kafka.enabled
-      value: false 
-    - name: externalKafka.brokers
-      values: 
-        - SASL_PLAINTEXT://kafka:9092
-    - name: externalKafka.listener.protocol
-      value: SASL_PLAINTEXT
-    - name: kafka.sasl.client.users
-      values:
-        - user1
-    - name: kafka.sasl.client.passwords
-      values:
-        - kafka-user-passwords.secret
-    - name: externalKafka.sasl.user
-      value: user1
-    - name: externalKafka.sasl.existingSecret
-      value: kafka-user-passwords
+  values: 
+    - values/schema-registry.yaml
  
 - name: kafka-connect
   namespace: mndwrk-demo
   chart: licenseware/kafka-connect
   version: 0.2.1
-  set:
-     - name: image.repository
-       value: registry.gitlab.com/architecture/kafka-connect
-     - name: image.tag
-       value: main
-     - name: image.imagePullSecrets
-       values:
-         - registry-credentials
-     - name: kafka.create
-       value: false
-     - name: schema-registry.create
-       value: false
-     - name: configMapPairs.CONNECT_BOOTSTRAP_SERVERS
-       value: kafka:9092
-     - name: configMapPairs.CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
-       value: http://schema-registry:8081
-     - name: configMapPairs.CONNECT_SECURITY_PROTOCOL
-       value: SASL_PLAINTEXT
-     - name: configMapPairs.CONNECT_SASL_MECHANISM
-       value: SCRAM-SHA-256
-     - name: configMapPairs.CONNECT_SASL_JAAS_CONFIG
-       value: "org.apache.kafka.common.security.scram.ScramLoginModule required \
-                username=\"user1\" \
-                password=\"kafka-user-passwords.secret\";"
+  values:
+    - values/kafka-connect.yaml
 
 - name: ksqldb
   namespace: mndwrk-demo
   chart: licenseware/ksqldb
   version: 0.4.1
-  set:
-    - name: kafka.create
-      value: false
-    - name: configMapPairs.KSQL_BOOTSTRAP_SERVERS
-      value: SASL_PLAINTEXT://kafka:9092
-    - name: configMapPairs.KSQL_KSQL_SCHEMA_REGISTRY_URL
-      value: http://schema-registry:8081
-    - name: configMapPairs.KSQL_KSQL_CONNECT_URL
-      value: http://connect:8083
-    - name: configMapPairs.KSQL_SECURITY_PROTOCOL
-      value: SASL_PLAINTEXT
-    - name: configMapPairs.KSQL_SASL_MECHANISM
-      value: SCRAM-SHA-256
-    - name: configMapPairs.KSQL_SASL_JAAS_CONFIG
-      value: "org.apache.kafka.common.security.scram.ScramLoginModule required \
-                username=\"user1\" \
-                password=\"kafka-user-passwords.secret\";"
+  values:
+    - values/ksqldb.yaml
 
 - name: redpanda-console
   namespace: mndwrk-demo
   chart: redpanda/console
   version: 0.7.26
-  set:
-    - name: ingress.enabled
-      value: true
-    - name: ingress.hosts[0].host
-      value: architect.gitlab.dev
-    - name: ingress.hosts[0].paths[0].path
-      value: /redpanda-console
-    - name: ingress.hosts[0].paths[0].path
-      value: ImplementationSpecific
-    - name: console.config.kafka.brokers
-      values: 
-        - kafka:9092
-    - name: console.config.kafka.schemaRegistry.enabled
-      value: true
-    - name: console.config.kafka.schemaRegistry.urls
-      values: 
-        - http://schema-registry:8081
-    - name: console.config.connect.enabled
-      value: true
-    - name: console.config.connect.clusters[0].name
-      value: kafka-connect-cluster
-    - name: console.config.connect.clusters[0].url
-      value: http://connect:8083
-    - name: console.config.kafka.clientId
-      value: redpanda-console    
-    - name: console.config.kafka.sasl.enabled
-      value: true
-    - name: console.config.kafka.sasl.username
-      value: user1  
-    - name: secret.kafka.saslPassword
-      value:  kafka-user-passwords-secret
-    - name: console.config.kafka.sasl.mechanism
-      value: SCRAM-SHA-256
-    - name: logger.level
-      value: DEBUG
+  values:
+    - values/redpanda-console.yaml
+
+- name: apisix
+  namespace: mndwrk-demo
+  chart: oci://registry-1.docker.io/bitnamicharts/apisix
+  version: 3.5.1
+  values:
+    - values/apisix.yaml
 
 - name: zilla
   namespace: mndwrk-demo
@@ -146,23 +71,29 @@ releases:
   set:
     - name: "zilla\\.yaml"
       file: ./zilla.yml
-    - name: service.type
-      value: LoadBalancer
+    - name: "service.type"
+      value: "LoadBalancer"
+    - name: "service.ports[0].name"
+      value: zilla
+    - name: "service.ports[0].port"
+      value: 8080
+    - name: "service.ports[0].targetName"
+      value: zilla
+    - name: "configMapPairs.KAFKA_BOOTSTRAP_SERVER"
+      value: kafka:9092
+    - name: "configMapPairs.SASL_USERNAME"
+      value: user1
+    - name: "configMapPairs.SASL_PASSWORD"
+      value: kafka-user-passwords.secret
 
 - name: keycloak
   namespace: mndwrk-demo
   chart: bitnami/keycloak
-  version: 21.0.0
-  set:
-    - name: image.registry
-      value: registry.gitlab.com
-    - name: image.repository
-      value: architecture/keycloak
-    - name: image.tag
-      value: main
-    - name: image.pullSecrets
-      values:
-        - registry-credentials
+  version: 22.0.0
+  values:
+    - values/keycloak.yaml
+
+
 ##
 ##- name: prometheus
 ##  namespace: mndwrk-demo

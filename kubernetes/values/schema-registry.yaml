@@ -1,0 +1,28 @@
+kafka:
+  enabled: false
+  sasl:
+    client:
+      users: 
+        - user1
+      passwords: 
+        - kafka-user-passwords.secret
+  
+externalKafka:
+  brokers:
+    - SASL_PLAINTEXT://kafka:9092
+  listener:
+    protocol: SASL_PLAINTEXT
+  sasl:
+    user: user1
+    existingSecret: kafka-user-passwords
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: schema-registry.mndwrk.dev
+  annotations:
+    cert-manager.io/cluster-issuer: mndwrk-issuer
+  extraTls:
+    - hosts:
+      - '*.mndwrk.dev'
+      secretName: mndwrk-tls

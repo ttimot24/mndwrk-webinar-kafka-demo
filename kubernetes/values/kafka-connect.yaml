@@ -1,0 +1,36 @@
+image:
+  repository: "kafka-connect"
+  tag: main
+  pullPolicy: Always
+imagePullSecrets:
+  - name: registry-credentials
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: mndwrk-issuer
+  hosts:
+    - host: kakfa-connect.mndwrk.dev
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: mndwrk-tls
+      hosts:
+        - '*.mndwrk.dev'
+  
+kafka: 
+  create: false
+
+schema-registry:
+  create: false
+  
+configMapPairs:
+  CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+  CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+  CONNECT_SECURITY_PROTOCOL: SASL_PLAINTEXT
+  CONNECT_SASL_MECHANISM: SCRAM-SHA-256
+  CONNECT_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+                                  username=\"user1\" \
+                                  password=\"kafka-user-passwords.secret\";"
