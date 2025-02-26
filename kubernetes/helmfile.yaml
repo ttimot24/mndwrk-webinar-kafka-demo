@@ -3,10 +3,6 @@ helmDefaults:
   createNamespace: true
 
 repositories:
-- name: trendency 
-  url: https://gitlab.trendency.hu/api/v4/projects/2443/packages/helm/devel
-  username: timot.tarjani
-  password: QvxdaShykq9bH9LyUuHu
 - name: bitnami
   url: https://charts.bitnami.com/bitnami
 - name: redpanda
